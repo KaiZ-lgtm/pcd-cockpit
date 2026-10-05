@@ -1,0 +1,10 @@
+# Signing key: never commit (store updates must be signed with this key; keep a backup elsewhere)
+developer_key
+*.der
+*.pem
+# Build output
+bin/
+# Local only: assistant instructions and the original design mockup
+CLAUDE.md
+.claude/
+mockup_final.html

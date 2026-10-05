@@ -1,0 +1,2 @@
+# Overlay for demo builds: build.ps1 -Demo  (monkeyc -f "monkey.jungle;demo.jungle")
+base.excludeAnnotations = live

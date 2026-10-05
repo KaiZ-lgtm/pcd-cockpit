@@ -1,0 +1,10 @@
+project.manifest = manifest.xml
+base.excludeAnnotations = demo
+# Other 454 px round AMOLED watches: same display as the fēnix 8 47mm; share its fonts and icon
+# (the compiler scales the icon where the launcher icon size differs).
+epix2pro51mm.resourcePath = $(epix2pro51mm.resourcePath);resources-fenix847mm
+fenix8pro47mm.resourcePath = $(fenix8pro47mm.resourcePath);resources-fenix847mm
+fr965.resourcePath = $(fr965.resourcePath);resources-fenix847mm
+fr970.resourcePath = $(fr970.resourcePath);resources-fenix847mm
+venu3.resourcePath = $(venu3.resourcePath);resources-fenix847mm
+venu445mm.resourcePath = $(venu445mm.resourcePath);resources-fenix847mm
