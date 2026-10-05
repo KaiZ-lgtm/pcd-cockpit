@@ -38,21 +38,34 @@ Privacy: the listing text below states what data is used. If the store asks for 
 
 **Name:** PCD Cockpit
 
-**Short description:** Fighter-jet cockpit style watch face: HR and altitude tapes, aviation weather, lunar date.
+**Short description:** Fighter-jet cockpit watch face: HUD heart-rate and altitude tapes, wind-barb weather station model, BINGO warning.
 
 **Description:**
 
-A watch face in the style of a fighter-jet cockpit display and HUD.
+A watch face built like a fighter-jet cockpit display. Read your body and the weather the way a pilot reads the instruments.
 
-- Heart-rate and altitude tapes at 9 and 3 o'clock, scrolling like a HUD speed and altitude scale. The heart-rate box and tape take the colour of your current HR zone.
-- Aviation weather "station model" at the top: sky cover circle, temperature, dew point, sea-level pressure (hPa), wind barb and present-weather symbols as on weather charts.
-- Large 24-hour time, weekday and date, and the Chinese lunar date.
-- Data windows: Body Battery, SpO2 and weekly intensity minutes, plus the next sunset or sunrise.
-- A segmented stress gauge above the bottom row (fēnix-size watches), turning amber and red as stress rises; BINGO warning when the battery is at 10% or less (on the Venu 3S, a STRESS warning replaces the gauge).
-- Tap an element to open the matching page on the watch (heart rate, altitude, weather, Body Battery, SpO2, intensity minutes, sunrise/sunset, battery, stress).
-- Always-on mode shows only the time, date and lunar date with thin strokes, and shifts every minute to protect the AMOLED screen.
+HUD TAPES
+- Heart rate at 9 o'clock, altitude at 3 o'clock: vertical tapes that scroll behind a fixed reading box, like the airspeed and altitude scales on a head-up display.
+- Heart-rate tape: a tick every 5 bpm, with a colour band marking your HR zone boundaries. The box takes the colour of your current zone, so you see your zone at a glance.
+- Altitude tape: a tick every 20 m; the box reads in tens of metres (125 = 1,250 m).
 
-Units are fixed: °C, hPa and metres (altitude shown in tens of metres).
+WEATHER STATION MODEL
+- The top of the face is a station model, the symbol pilots and forecasters read on surface weather charts.
+- Sky-cover circle from clear to overcast, temperature and dew point, sea-level pressure in hPa, and present-weather symbols (rain, snow, showers, thunderstorm, fog and more).
+- Wind barb: the staff points to where the wind blows from; a half barb is 5 knots, a full barb 10 knots, a pennant 50 knots. Calm wind draws a ring around the circle.
+
+BINGO
+- "Bingo fuel" is the pilot's call for just enough fuel to get home. When the battery reaches 10%, the bottom row turns into a red-striped BINGO warning box: time to charge.
+- On the Venu 3S, a STRESS warning box appears the same way when stress is high.
+
+ALSO ON THE FACE
+- Large 24-hour time, weekday, date and the Chinese lunar date.
+- Data windows: Body Battery, SpO2, weekly intensity minutes and the next sunrise or sunset.
+- Segmented stress gauge in cockpit style on fēnix-size watches, turning amber and red as stress rises.
+- Tap any element to open the matching page on the watch.
+- Always-on mode shows only the time, date and lunar date in thin strokes, shifted every minute to protect the AMOLED screen.
+
+Units are fixed: °C, hPa, knots and metres.
 
 Supported: fēnix 8 and fēnix 8 Pro 47 / 51 mm (also tactix 8 and quatix 8), epix Pro (Gen 2) 51 mm, Forerunner 965 / 970, Venu 3, Venu 3S, Venu 4 45 mm. AMOLED only.
 
@@ -62,21 +75,34 @@ Supported: fēnix 8 and fēnix 8 Pro 47 / 51 mm (also tactix 8 and quatix 8), ep
 
 **名称：** PCD Cockpit（中文副名可选：座舱表盘）
 
-**简短介绍：** 战斗机座舱风格表盘：心率带、高度带、航空天气图、农历。
+**简短介绍：** 战斗机座舱表盘：HUD 心率带和高度带、带风羽的航空天气站点模型、BINGO 警告。
 
 **详细介绍：**
 
-仿照战斗机座舱多功能显示器和平视显示器（HUD）设计的表盘。
+按战斗机座舱显示器设计的表盘，像飞行员看仪表一样看自己的身体状态和天气。
 
-- 9 点和 3 点方向是心率带和高度带，像 HUD 上的速度带、高度带一样上下滚动。心率框和色带会显示你当前所在的心率区间颜色。
-- 顶部是航空天气图的"站点模型"：云量圆、气温、露点、海平面气压（hPa）、风羽和天气符号。
-- 大号 24 小时制时间，星期和日期，以及农历。
-- 数据窗：身体电量、血氧、本周强度活动分钟，以及下一次日落或日出时间。
-- 底部上方有分段式压力条（fēnix 尺寸的表），压力升高时变成琥珀色和红色；电量 ≤ 10% 时显示 BINGO 警告（Venu 3S 没有压力条，改为显示 STRESS 警告）。
-- 点击表盘上的元素可打开手表对应的页面（心率、高度计、天气、身体电量、血氧、强度活动分钟、日出日落、电量、压力）。
+HUD 刻度带
+- 9 点方向是心率带，3 点方向是高度带：竖直的刻度带在固定读数框后面上下滚动，就像平视显示器上的空速带和高度带。
+- 心率带每 5 bpm 一个刻度，旁边的色带标出心率区间的分界；读数框的颜色就是你当前所在的区间，一眼就能看出。
+- 高度带每 20 米一个刻度；读数框以十米为单位（125 = 1250 米）。
+
+航空天气站点模型
+- 表盘顶部是"站点模型"，就是飞行员和预报员在地面天气图上看的那种符号。
+- 云量圆（从晴到阴天）、气温和露点、海平面气压（百帕），以及天气现象符号（雨、雪、阵雨、雷暴、雾等）。
+- 风羽：杆指向风吹来的方向；短羽 5 节，长羽 10 节，三角旗 50 节。无风时在云量圆外多画一圈。
+
+BINGO
+- "Bingo fuel"是飞行员的术语，意思是剩下的油刚好够返航。电量降到 10% 时，底部一行变成红色斜纹的 BINGO 警告框：该充电了。
+- Venu 3S 上，压力高时也会以同样的方式显示 STRESS 警告框。
+
+表盘上还有
+- 大号 24 小时制时间、星期、日期和农历。
+- 数据窗：身体电量、血氧、本周强度活动分钟，以及下一次日出或日落时间。
+- fēnix 尺寸的表上有座舱风格的分段压力条，压力升高时变成琥珀色和红色。
+- 点击表盘上的任何元素，都能打开手表上对应的页面。
 - 息屏时只显示细线条的时间、日期和农历，并且每分钟平移一次，防止 AMOLED 烧屏。
 
-单位固定：摄氏度、百帕、米（高度以十米为单位显示）。
+单位固定：摄氏度、百帕、节、米。
 
 支持：fēnix 8 和 fēnix 8 Pro 47 / 51 mm（含 tactix 8、quatix 8）、epix Pro（第二代）51 mm、Forerunner 965 / 970、Venu 3、Venu 3S、Venu 4 45 mm，仅限 AMOLED 屏幕。
 
