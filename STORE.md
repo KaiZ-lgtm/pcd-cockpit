@@ -1,6 +1,8 @@
 # PCD Cockpit — Connect IQ Store listing (draft)
 
-Draft text for the store page, plus the submission steps. Nothing here has been submitted yet.
+Text for the store page, plus the submission steps.
+
+**Submitted 2026-10-05** as version 0.1.0 (developer name `PCDCockpit`, category Digital, free, English + 简体中文, source link to GitHub): https://apps.garmin.com/apps/dfd968c1-9d33-4d44-a191-c6de0fa0d4e6 — pending review. Updates go through "Upload New Version" on that page, signed with the same `developer_key`.
 
 The listing avoids "F-35" and other aircraft or maker names: the App Review Guidelines ask developers to be careful with other companies' brand names, and "F-35" is a Lockheed Martin trademark. "Fighter-jet HUD / cockpit display style" says the same thing. The code comments and internal docs are not affected.
 
