@@ -1,6 +1,7 @@
 import Toybox.Activity;
 import Toybox.ActivityMonitor;
 import Toybox.Application;
+import Toybox.Complications;
 import Toybox.Lang;
 import Toybox.Position;
 import Toybox.SensorHistory;
@@ -12,9 +13,6 @@ import Toybox.Weather;
 
 // Snapshot of everything the face shows (requirements §5).
 class Data {
-    // Warning levels for the bottom row (§3.6), highest priority first.
-    enum { WARN_NONE, WARN_BINGO, WARN_STRESS_HIGH, WARN_STRESS_MED }
-
     var hr as Number? = null;
     var zones as Array<Number>? = null;
     var altitude as Float? = null;        // metres
@@ -36,6 +34,20 @@ class Data {
     var wxWindKt as Float? = null;
     var sunIsSet as Boolean = true;       // true: next event is sunset (SS)
     var sunTime as String? = null;       // "HHMM"
+    // Slot-only fields (Fields.mc), read once a minute; null = not available on this watch / no data.
+    var steps as Number? = null, stepGoal as Number? = null;
+    var floors as Number? = null, floorsGoal as Number? = null, floorsDn as Number? = null;
+    var kcal as Number? = null;
+    var distM as Float? = null;           // today, metres
+    var actDay as Number? = null;         // intensity minutes today
+    var climbM as Float? = null;          // metres climbed today
+    var vo2Run as Number? = null, vo2Bike as Number? = null;
+    var runWkM as Float? = null, bikeWkM as Float? = null;   // this week, metres
+    var rhr as Number? = null;
+    var sleepScore as Number? = null;
+    var visM as Float? = null;            // weather visibility, metres
+    var pop as Number? = null;            // chance of precipitation, %
+    var utcTime as String? = null;        // "HHMM"
 
     private var _slowMinute as Number = -1;
 
@@ -85,6 +97,21 @@ class Data {
         actGoal = 150;
         sunIsSet = true;
         sunTime = "1856";
+        // Slot-only fields; odd steps: the widest values (shortened forms in the narrow windows).
+        var wide = i % 2 == 1;
+        steps = wide ? 23456 : 8642; stepGoal = 10000;
+        floors = wide ? 128 : 7; floorsGoal = 10; floorsDn = wide ? 99 : 5;
+        kcal = wide ? 3456 : 1840;
+        distM = wide ? 123400.0 : 8420.0;
+        actDay = wide ? 240 : 35;
+        climbM = wide ? 2345.0 : 312.0;
+        vo2Run = wide ? 65 : 48; vo2Bike = i % 3 == 0 ? null : 52;
+        runWkM = wide ? 112300.0 : 23400.0; bikeWkM = wide ? 312000.0 : 0.0;
+        rhr = wide ? 104 : 48;
+        sleepScore = wide ? 100 : 82;
+        visM = wide ? 50000.0 : 4800.0;
+        pop = wide ? 100 : 40;
+        utcTime = wide ? "2359" : "0242";
         System.println("demo " + i + " cond " + wxCond + " cover " + wxCover + " wind " + wxWindDir + "/" + wxWindKt);
     }
 
@@ -122,16 +149,57 @@ class Data {
         }
         actMin = am.activeMinutesWeek != null ? am.activeMinutesWeek.total : null;
         actGoal = am.activeMinutesWeekGoal;
+        readActivity(am);
+        readProfile();
 
         var wx = Weather.getCurrentConditions();
         readWeather(now, wx);
         refreshSun(now, info, wx);
+        var u = Gregorian.utcInfo(now, Time.FORMAT_SHORT);
+        utcTime = u.hour.format("%02d") + u.min.format("%02d");
+    }
+
+    private function readActivity(am as ActivityMonitor.Info) as Void {
+        steps = am.steps;
+        stepGoal = am.stepGoal;
+        floors = (am has :floorsClimbed) ? am.floorsClimbed : null;
+        floorsGoal = (am has :floorsClimbedGoal) ? am.floorsClimbedGoal : null;
+        floorsDn = (am has :floorsDescended) ? am.floorsDescended : null;
+        kcal = am.calories;
+        distM = am.distance != null ? am.distance / 100.0 : null;   // cm
+        actDay = am.activeMinutesDay != null ? am.activeMinutesDay.total : null;
+        climbM = (am has :metersClimbed && am.metersClimbed != null) ? am.metersClimbed.toFloat() : null;
+        runWkM = complicationFloat(Complications.COMPLICATION_TYPE_WEEKLY_RUN_DISTANCE);
+        bikeWkM = complicationFloat(Complications.COMPLICATION_TYPE_WEEKLY_BIKE_DISTANCE);
+        var sl = complicationFloat(42 as Complications.Type);   // COMPLICATION_TYPE_SLEEP_SCORE (API 6.0.2)
+        sleepScore = sl != null ? (sl + 0.5).toNumber() : null;
+    }
+
+    private function readProfile() as Void {
+        var p = UserProfile.getProfile();
+        vo2Run = (p has :vo2maxRunning) ? p.vo2maxRunning : null;
+        vo2Bike = (p has :vo2maxCycling) ? p.vo2maxCycling : null;
+        rhr = (p has :restingHeartRate) ? p.restingHeartRate : null;
+    }
+
+    // Numeric value of a system complication; null if the watch does not have it or it has no value.
+    private function complicationFloat(t as Complications.Type) as Float? {
+        try {
+            var v = Complications.getComplication(new Complications.Id(t)).value;
+            return v instanceof Number || v instanceof Float || v instanceof Long || v instanceof Double ? v.toFloat() : null;
+        } catch (e) {
+            return null;
+        }
     }
 
     private function readWeather(now as Time.Moment, wx as Weather.CurrentConditions?) as Void {
         wxOk = wx != null;
         wxStale = false;
+        visM = null;
+        pop = null;
         if (wx == null) { return; }
+        visM = (wx has :visibility && wx.visibility != null) ? wx.visibility.toFloat() : null;
+        pop = wx.precipitationChance;
         if (wx.observationTime != null) {
             wxStale = now.value() - wx.observationTime.value() > 3 * 3600;
         }
@@ -188,19 +256,9 @@ class Data {
         return null;
     }
 
-    // STRESS warning in the bottom row (amber 51–75, red ≥ 76). Off: the row keeps showing its field
-    // unless BINGO. On by default; fixed for now, a later settings page would set this. PcdView turns
-    // stressWarn off where a gauge already shows stress (Layout.GAUGE).
-    const STRESS_WARN = true;
-    var stressWarn as Boolean = STRESS_WARN;
-
-    function warning() as Number {
-        var pct = battery;
-        if (pct <= 10) { return WARN_BINGO; }
-        if (!stressWarn) { return WARN_NONE; }
-        if (stress != null && stress >= 76) { return WARN_STRESS_HIGH; }
-        if (stress != null && stress >= 51) { return WARN_STRESS_MED; }
-        return WARN_NONE;
+    // BINGO warning (§3.6): replaces the bottom row at 10 % battery or less.
+    function bingo() as Boolean {
+        return battery <= 10;
     }
 
     private function lastHr() as Number? {

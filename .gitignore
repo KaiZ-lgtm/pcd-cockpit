@@ -8,3 +8,6 @@ bin/
 CLAUDE.md
 .claude/
 mockup_final.html
+# Regression test scratch: patched copy and fresh captures (tests\golden\ is committed)
+tests/work/
+tests/out/

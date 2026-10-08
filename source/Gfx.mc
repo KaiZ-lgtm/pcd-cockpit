@@ -9,7 +9,6 @@ module Col {
     const WHITE = 0xFFFFFF;
     const CYAN = 0x33E0FF;
     const AMBER = 0xFFC21A;
-    const AMBER_DIM = 0x9A7410;   // warning stripes, so white text still reads on top
     const RED_DIM = 0xB02222;
     const RED = 0xFF3030;
     const DIVIDER = 0x5A5A5A;
@@ -139,15 +138,16 @@ class StrokeFont {
 module Stroke {
     enum { START = -1, MIDDLE = 0, END = 1 }
 
-    // Advances in grid units for Latin, '-', ' ' and ':' (glyphs.json "_adv"; condensed styles are
+    // Advances in grid units for Latin, '-', ' ', ':' and '.' (glyphs.json "_adv"; condensed styles are
     // narrower). Set once by setAdvances before drawing.
-    var advLatin as Float = 11.0, advDash as Float = 9.0, advSpace as Float = 6.0, advColon as Float = 4.0;
+    var advLatin as Float = 11.0, advDash as Float = 9.0, advSpace as Float = 6.0, advColon as Float = 4.0, advDot as Float = 3.7;
 
     function setAdvances(a as Array) as Void {
         advLatin = (a[0] as Numeric).toFloat();
         advDash = (a[1] as Numeric).toFloat();
         advSpace = (a[2] as Numeric).toFloat();
         advColon = (a[3] as Numeric).toFloat();
+        advDot = a.size() > 4 ? (a[4] as Numeric).toFloat() : advColon;
     }
 
     function adv(c as Char) as Float {
@@ -155,6 +155,7 @@ module Stroke {
         if (c == ' ') { return advSpace; }
         if (c == '-') { return advDash; }
         if (c == ':') { return advColon; }
+        if (c == '.') { return advDot; }
         return advLatin;
     }
 

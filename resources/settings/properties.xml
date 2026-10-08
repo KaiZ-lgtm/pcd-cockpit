@@ -1,0 +1,12 @@
+<!-- Phone settings (SETTINGS.md). fontStyle: 0 D / 1 G / 2 E; the slot values are Field ids (source/Fields.mc;
+     -1 = lunar date). The defaults are the look of the build before settings existed. -->
+<properties>
+    <property id="fontStyle" type="number">1</property>
+    <property id="field1" type="number">0</property>
+    <property id="field2" type="number">1</property>
+    <property id="field3" type="number">2</property>
+    <property id="dateField" type="number">-1</property>
+    <property id="bottomField" type="number">3</property>
+    <property id="gaugeField" type="number">4</property>
+    <property id="showBars" type="boolean">false</property>
+</properties>

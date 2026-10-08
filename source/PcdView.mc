@@ -13,7 +13,7 @@ class PcdView extends WatchUi.WatchFace {
     // combined path repeats only every 35 minutes and never moves parallel to a stroke for long.
     const ORBIT_X = [-3, 0, 3, -1, 2, -2, 1] as Array<Number>;
     const ORBIT_Y = [-3, 0, 3, -1, 2] as Array<Number>;
-    // 8-neighbour offsets for the warning text halo.
+    // 8-neighbour offsets for the BINGO text halo.
     const HALO_X = [-1, 0, 1, -1, 1, -1, 0, 1] as Array<Number>;
     const HALO_Y = [-1, -1, -1, 0, 0, 1, 1, 1] as Array<Number>;
 
@@ -21,6 +21,8 @@ class PcdView extends WatchUi.WatchFace {
     var data as Data = new Data();
     private var _cx as Number = 0;
     private var _cy as Number = 0;
+    private var _w as Number = 0;
+    private var _style as Number = -1;   // font style loaded (Settings.fontStyle); -1 = none yet
     private var _sleeping as Boolean = false;
     private var _lunarKey as Number = -1;
     private var _lunarMonth as String? = null;   // e.g. 八月 / 闰六月
@@ -36,62 +38,66 @@ class PcdView extends WatchUi.WatchFace {
     }
 
     function onLayout(dc as Dc) as Void {
-        lay = new Layout(dc.getWidth());
+        _w = dc.getWidth();
         _cx = dc.getWidth() / 2;
         _cy = dc.getHeight() / 2;
-        var ids = fontIds(FONT_STYLE);
+        applySettings();
+    }
+
+    // Apply Settings: at start and when the phone settings change (PcdApp). Rebuilds the layout (slot
+    // positions never change, only their fields) and loads the fonts when the font style changed.
+    function applySettings() as Void {
+        if (_w == 0) { return; }
+        lay = new Layout(_w);
+        if (Settings.fontStyle != _style) { loadFonts(Settings.fontStyle); }
+    }
+
+    // Glyph atlases of one font style (tools/FontGen.java STYLES), all condensed with the F-35 PCD glyph
+    // shapes: 0 = D chamfered corners, 1 = G small rounded corners (default), 2 = E large rounded corners.
+    // The old style is dropped first, so two styles are never in memory at once.
+    private function loadFonts(style as Number) as Void {
+        _fTime = null; _fTimeAod = null; _fText = null; _fDate = null; _fDateAod = null;
+        _fTapeVal = null; _fTapeLbl = null; _fTapeUnit = null; _fGaugeVal = null;
+        _fHdr = null; _fVal = null; _fUnit = null; _fTabWarn = null; _fLunar = null;
+        var ids = fontIds(style);
         var g = WatchUi.loadResource(ids[0]) as Dictionary;
         Stroke.setAdvances(g["_adv"] as Array);
         _fTime = font(ids[1], g, "FTime");
         _fTimeAod = font(ids[2], g, "FTimeAod");
         _fText = font(ids[3], g, "FText");
-        _fDateAod = font(ids[4], g, "FDateAod");
-        _fDate = font(ids[12], g, "FDate");
-        _fTapeVal = font(ids[5], g, "FTapeVal");        _fTapeLbl = font(ids[6], g, "FTapeLbl");
-        _fTapeUnit = font(ids[7], g, "FTapeUnit");
-        _fHdr = font(ids[8], g, "FHdr");
-        _fVal = font(ids[9], g, "FVal");
-        _fUnit = font(ids[10], g, "FUnit");
-        _fTabWarn = font(ids[11], g, "FTabWarn");
+        _fDate = font(ids[4], g, "FDate");
+        _fDateAod = font(ids[5], g, "FDateAod");
+        _fTapeVal = font(ids[6], g, "FTapeVal");
+        _fTapeLbl = font(ids[7], g, "FTapeLbl");
+        _fTapeUnit = font(ids[8], g, "FTapeUnit");
+        _fGaugeVal = font(ids[9], g, "FGaugeVal");
+        _fHdr = font(ids[10], g, "FHdr");
+        _fVal = font(ids[11], g, "FVal");
+        _fUnit = font(ids[12], g, "FUnit");
+        _fTabWarn = font(ids[13], g, "FTabWarn");
         _fLunar = font(Rez.Drawables.FLunar, g, "FLunar");
-        _fGaugeVal = font(ids[13], g, "FGaugeVal");
-        // A gauge showing stress replaces the STRESS warning (same thresholds, always visible).
-        var slots = (lay as Layout).slots;
-        for (var i = 0; i < slots.size(); i++) {
-            var s = slots[i];
-            if (s.style == Slot.GAUGE && s.field == Field.STRESS) { data.stressWarn = false; }
-        }
+        _style = style;
     }
 
-    // Font style (tools/FontGen.java STYLES), all condensed with the F-35 PCD glyph shapes:
-    // 0 = D chamfered corners, 1 = G small rounded corners (default), 2 = E large rounded corners.
-    // Fixed for now; a later settings page would set this (only the chosen style is loaded).
-    const FONT_STYLE = 1;
-
-    // Colon between hours and minutes ("23:41" instead of "2341"), active and always-on. Off by default:
-    // without it the time fits between the 3 / 9 o'clock tapes at a larger size. Fixed for now; a later
-    // settings page would set this (with the colon the time is ~49 px wider on fēnix and may touch the tapes).
-    const TIME_COLON = false;
-
-    // [glyph table, FTime, FTimeAod, FText, FDateAod, FTapeVal, FTapeLbl, FTapeUnit, FHdr, FVal,
-    //  FUnit, FTabWarn, FDate, FGaugeVal] resource ids for a style.
+    // [glyph table, FTime, FTimeAod, FText, FDate, FDateAod, FTapeVal, FTapeLbl, FTapeUnit, FGaugeVal,
+    //  FHdr, FVal, FUnit, FTabWarn] resource ids of a font style.
     private function fontIds(style as Number) as Array<ResourceId> {
         if (style == 0) {
             return [Rez.JsonData.Glyphs_D, Rez.Drawables.FTime_D, Rez.Drawables.FTimeAod_D, Rez.Drawables.FText_D,
-                    Rez.Drawables.FDateAod_D, Rez.Drawables.FTapeVal_D, Rez.Drawables.FTapeLbl_D, Rez.Drawables.FTapeUnit_D,
-                    Rez.Drawables.FHdr_D, Rez.Drawables.FVal_D, Rez.Drawables.FUnit_D,
-                    Rez.Drawables.FTabWarn_D, Rez.Drawables.FDate_D, Rez.Drawables.FGaugeVal_D];
+                    Rez.Drawables.FDate_D, Rez.Drawables.FDateAod_D, Rez.Drawables.FTapeVal_D, Rez.Drawables.FTapeLbl_D,
+                    Rez.Drawables.FTapeUnit_D, Rez.Drawables.FGaugeVal_D, Rez.Drawables.FHdr_D, Rez.Drawables.FVal_D,
+                    Rez.Drawables.FUnit_D, Rez.Drawables.FTabWarn_D];
         }
         if (style == 2) {
             return [Rez.JsonData.Glyphs_E, Rez.Drawables.FTime_E, Rez.Drawables.FTimeAod_E, Rez.Drawables.FText_E,
-                    Rez.Drawables.FDateAod_E, Rez.Drawables.FTapeVal_E, Rez.Drawables.FTapeLbl_E, Rez.Drawables.FTapeUnit_E,
-                    Rez.Drawables.FHdr_E, Rez.Drawables.FVal_E, Rez.Drawables.FUnit_E,
-                    Rez.Drawables.FTabWarn_E, Rez.Drawables.FDate_E, Rez.Drawables.FGaugeVal_E];
+                    Rez.Drawables.FDate_E, Rez.Drawables.FDateAod_E, Rez.Drawables.FTapeVal_E, Rez.Drawables.FTapeLbl_E,
+                    Rez.Drawables.FTapeUnit_E, Rez.Drawables.FGaugeVal_E, Rez.Drawables.FHdr_E, Rez.Drawables.FVal_E,
+                    Rez.Drawables.FUnit_E, Rez.Drawables.FTabWarn_E];
         }
         return [Rez.JsonData.Glyphs_G, Rez.Drawables.FTime_G, Rez.Drawables.FTimeAod_G, Rez.Drawables.FText_G,
-                Rez.Drawables.FDateAod_G, Rez.Drawables.FTapeVal_G, Rez.Drawables.FTapeLbl_G, Rez.Drawables.FTapeUnit_G,
-                Rez.Drawables.FHdr_G, Rez.Drawables.FVal_G, Rez.Drawables.FUnit_G,
-                Rez.Drawables.FTabWarn_G, Rez.Drawables.FDate_G, Rez.Drawables.FGaugeVal_G];
+                Rez.Drawables.FDate_G, Rez.Drawables.FDateAod_G, Rez.Drawables.FTapeVal_G, Rez.Drawables.FTapeLbl_G,
+                Rez.Drawables.FTapeUnit_G, Rez.Drawables.FGaugeVal_G, Rez.Drawables.FHdr_G, Rez.Drawables.FVal_G,
+                Rez.Drawables.FUnit_G, Rez.Drawables.FTabWarn_G];
     }
 
     private function font(id as ResourceId, glyphs as Dictionary, name as String) as StrokeFont {
@@ -113,7 +119,8 @@ class PcdView extends WatchUi.WatchFace {
         data.refresh(now, minuteKey);
         updateLunar(t);
 
-        var timeStr = t.hour.format("%02d") + (TIME_COLON ? ":" : "") + t.min.format("%02d");
+        // No colon: "23:41" does not fit between the tape boxes (SETTINGS.md §1).
+        var timeStr = t.hour.format("%02d") + t.min.format("%02d");
         var wday = DAYS[t.day_of_week - 1];
         var mmdd = (t.month as Number).format("%02d") + "/" + t.day.format("%02d");
 
@@ -345,10 +352,9 @@ class PcdView extends WatchUi.WatchFace {
 
     // ---- Slots: data row, date block right column, bottom row ---------------------------
 
-    // Thin progress bar under a data row value, drawn only for fields that have a goal
-    // (Field.read returns a progress value; e.g. ACT MIN, later steps or floors). Off for now;
-    // layout keeps room for it (bar sits ~17 px above the bottom row). Becomes a setting later.
-    const SHOW_BARS = false;
+    // Thin progress bar under a data row value (Settings.showBars), drawn only for fields that have a goal
+    // (Field.read returns a progress value; e.g. ACT MIN). The layout keeps room for it (bar sits ~17 px
+    // above the bottom row).
 
     // Data row frame: divider line above, vertical dividers between the cells.
     private function drawDividers(dc as Dc, L as Layout) as Void {
@@ -366,16 +372,19 @@ class PcdView extends WatchUi.WatchFace {
         var slots = L.slots;
         for (var i = 0; i < slots.size(); i++) {
             var s = slots[i];
-            if (s.warn && data.warning() != Data.WARN_NONE) { drawWarning(dc, L); continue; }
+            if (s.warn && data.bingo()) { drawWarning(dc, L); continue; }
             if (s.field == Field.LUNAR) { drawLunar(dc, L, s, 0, 0, Col.LUNAR); continue; }
             if (s.style == Slot.GAUGE) { drawGauge(dc, L, s); continue; }
             var r = Field.read(s.field, data);
             var hdr = Field.header(s.field, data);
+            var val = r[0] as String?;
             if (s.style == Slot.ROW) {
-                drawRow(dc, L, hdr, r[0] as String?, r[1] as String, _cx + s.x, _cy + s.vb);
+                var f = Fit.row(s.field, hdr, val, r[1] as String, r[3] as Array<String>?, L);
+                drawRow(dc, L, f[0] as String, val != null ? f[1] as String : null, f[2] as String, _cx + s.x, _cy + s.vb);
             } else {
-                cellText(dc, L, _cx + s.x, s.w, hdr, r[0] as String?, r[1] as String, _cy + s.hb, _cy + s.vb);
-                if (SHOW_BARS && s.bar && r[2] != null) { drawBar(dc, _cx + s.x, s.w, _cy + s.vb + 9, r[2] as Float); }
+                var f = Fit.cell(s.field, hdr, val, r[1] as String, r[3] as Array<String>?, s.w, L);
+                cellText(dc, L, _cx + s.x, f[0] as String, f[1] as String?, f[2] as String, _cy + s.hb, _cy + s.vb);
+                if (Settings.showBars && s.bar && r[2] != null) { drawBar(dc, _cx + s.x, s.w, _cy + s.vb + 9, r[2] as Float); }
             }
         }
     }
@@ -395,8 +404,8 @@ class PcdView extends WatchUi.WatchFace {
     }
 
     // NARROW / WIDE style: cyan underlined header (baseline hb) over a white value with an optional gray
-    // unit (baseline vb), centred on xc in a cell w px wide.
-    private function cellText(dc as Dc, L as Layout, xc as Numeric, w as Numeric, lab as String,
+    // unit (baseline vb), centred on xc. Header, value and unit already fitted to the cell (Fit.cell).
+    private function cellText(dc as Dc, L as Layout, xc as Numeric, lab as String,
                               val as String?, unit as String, hb as Numeric, vb as Numeric) as Void {
         Stroke.header(dc, lab, xc, hb, L.hdrH, _fHdr as StrokeFont);
         if (val == null) {
@@ -404,9 +413,7 @@ class PcdView extends WatchUi.WatchFace {
             return;
         }
         var vw = Stroke.width(val, L.valH);
-        var uw = unit.length() > 0 ? Stroke.width(unit, L.unitH) + 4 : 0;
-        // Too wide for the cell (e.g. a 4-digit goal): drop the unit rather than cross a divider.
-        if (vw + uw > w - 12) { unit = ""; uw = 0; }   // Stroke.width omits the stroke overhang; keep ~4 px clear
+        var uw = Fit.unitWidth(unit, L);
         var vx = xc - (vw + uw) / 2.0;
         Stroke.draw(dc, val, vx, vb, L.valH, Col.WHITE, Stroke.START, _fVal as StrokeFont);
         if (unit.length() > 0) {
@@ -478,19 +485,16 @@ class PcdView extends WatchUi.WatchFace {
         dc.clearClip();
     }
 
-    // Square-cornered box with a 2 px pixel-aligned border (like the tape value boxes), dimmed hazard
-    // stripes and the white label: BINGO red, STRESS red or amber.
+    // BINGO: square-cornered red box with a 2 px pixel-aligned border (like the tape value boxes), dimmed
+    // hazard stripes and the white label.
     private function drawWarning(dc as Dc, L as Layout) as Void {
-        var w = data.warning();
-        var label = w == Data.WARN_BINGO ? "BINGO" : "STRESS";
+        var label = "BINGO";
         var y = _cy + L.botY, h = L.botH, hw = L.botW / 2;
         var x = _cx;
         var base = y + (h + L.tabH) / 2;
-        var amber = w == Data.WARN_STRESS_MED;
-        var col = amber ? Col.AMBER : Col.RED;
         var bx = x - hw - 4, bw = 2 * hw + 8;
-        hatch(dc, bx, y, bw, h, amber ? Col.AMBER_DIM : Col.RED_DIM, L.big);
-        dc.setColor(col, Graphics.COLOR_TRANSPARENT);
+        hatch(dc, bx, y, bw, h, Col.RED_DIM, L.big);
+        dc.setColor(Col.RED, Graphics.COLOR_TRANSPARENT);
         dc.fillRectangle(bx - 1, y - 1, bw + 2, 2);
         dc.fillRectangle(bx - 1, y + h - 1, bw + 2, 2);
         dc.fillRectangle(bx - 1, y - 1, 2, h + 2);

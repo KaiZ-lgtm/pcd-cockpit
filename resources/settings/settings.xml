@@ -1,0 +1,148 @@
+<!-- Phone form (Connect IQ / Garmin Connect app). Field order as in SETTINGS.md §4 (keep all
+     five lists in that order). Each list offers the fields its slot can show (Settings.allowed): the narrow windows
+     leave out the wide-only fields (Field.wide: sun event, UTC, steps, calories, ACT MIN); the bottom row leaves out ACT MIN (Field.rowOk); the lunar date is only offered for the date
+     block. listEntry values are Field ids (source/Fields.mc); each list starts with its slot's default. -->
+<settings>
+    <setting propertyKey="@Properties.fontStyle" title="@Strings.SetFont">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.FontG</listEntry>
+            <listEntry value="0">@Strings.FontD</listEntry>
+            <listEntry value="2">@Strings.FontE</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.field1" title="@Strings.SetField1">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.FieldBB</listEntry>
+            <listEntry value="1">@Strings.FieldSpo2</listEntry>
+            <listEntry value="4">@Strings.FieldStress</listEntry>
+            <listEntry value="17">@Strings.FieldRhr</listEntry>
+            <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="10">@Strings.FieldDist</listEntry>
+            <listEntry value="7">@Strings.FieldFloors</listEntry>
+            <listEntry value="8">@Strings.FieldFloorsDn</listEntry>
+            <listEntry value="12">@Strings.FieldClimb</listEntry>
+            <listEntry value="11">@Strings.FieldActDay</listEntry>
+            <listEntry value="13">@Strings.FieldVo2Run</listEntry>
+            <listEntry value="14">@Strings.FieldVo2Bike</listEntry>
+            <listEntry value="15">@Strings.FieldRunWk</listEntry>
+            <listEntry value="16">@Strings.FieldBikeWk</listEntry>
+            <listEntry value="21">@Strings.FieldPop</listEntry>
+            <listEntry value="20">@Strings.FieldVis</listEntry>
+            <listEntry value="5">@Strings.FieldBattery</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.field2" title="@Strings.SetField2">
+        <settingConfig type="list">
+            <listEntry value="1">@Strings.FieldSpo2</listEntry>
+            <listEntry value="0">@Strings.FieldBB</listEntry>
+            <listEntry value="4">@Strings.FieldStress</listEntry>
+            <listEntry value="17">@Strings.FieldRhr</listEntry>
+            <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="10">@Strings.FieldDist</listEntry>
+            <listEntry value="7">@Strings.FieldFloors</listEntry>
+            <listEntry value="8">@Strings.FieldFloorsDn</listEntry>
+            <listEntry value="12">@Strings.FieldClimb</listEntry>
+            <listEntry value="11">@Strings.FieldActDay</listEntry>
+            <listEntry value="13">@Strings.FieldVo2Run</listEntry>
+            <listEntry value="14">@Strings.FieldVo2Bike</listEntry>
+            <listEntry value="15">@Strings.FieldRunWk</listEntry>
+            <listEntry value="16">@Strings.FieldBikeWk</listEntry>
+            <listEntry value="21">@Strings.FieldPop</listEntry>
+            <listEntry value="20">@Strings.FieldVis</listEntry>
+            <listEntry value="5">@Strings.FieldBattery</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.field3" title="@Strings.SetField3">
+        <settingConfig type="list">
+            <listEntry value="2">@Strings.FieldActMin</listEntry>
+            <listEntry value="0">@Strings.FieldBB</listEntry>
+            <listEntry value="1">@Strings.FieldSpo2</listEntry>
+            <listEntry value="4">@Strings.FieldStress</listEntry>
+            <listEntry value="17">@Strings.FieldRhr</listEntry>
+            <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="6">@Strings.FieldSteps</listEntry>
+            <listEntry value="10">@Strings.FieldDist</listEntry>
+            <listEntry value="9">@Strings.FieldKcal</listEntry>
+            <listEntry value="7">@Strings.FieldFloors</listEntry>
+            <listEntry value="8">@Strings.FieldFloorsDn</listEntry>
+            <listEntry value="12">@Strings.FieldClimb</listEntry>
+            <listEntry value="11">@Strings.FieldActDay</listEntry>
+            <listEntry value="13">@Strings.FieldVo2Run</listEntry>
+            <listEntry value="14">@Strings.FieldVo2Bike</listEntry>
+            <listEntry value="15">@Strings.FieldRunWk</listEntry>
+            <listEntry value="16">@Strings.FieldBikeWk</listEntry>
+            <listEntry value="21">@Strings.FieldPop</listEntry>
+            <listEntry value="20">@Strings.FieldVis</listEntry>
+            <listEntry value="3">@Strings.FieldSun</listEntry>
+            <listEntry value="19">@Strings.FieldUtc</listEntry>
+            <listEntry value="5">@Strings.FieldBattery</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.dateField" title="@Strings.SetDate">
+        <settingConfig type="list">
+            <listEntry value="-1">@Strings.FieldLunar</listEntry>
+            <listEntry value="0">@Strings.FieldBB</listEntry>
+            <listEntry value="1">@Strings.FieldSpo2</listEntry>
+            <listEntry value="4">@Strings.FieldStress</listEntry>
+            <listEntry value="17">@Strings.FieldRhr</listEntry>
+            <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="6">@Strings.FieldSteps</listEntry>
+            <listEntry value="10">@Strings.FieldDist</listEntry>
+            <listEntry value="9">@Strings.FieldKcal</listEntry>
+            <listEntry value="7">@Strings.FieldFloors</listEntry>
+            <listEntry value="8">@Strings.FieldFloorsDn</listEntry>
+            <listEntry value="12">@Strings.FieldClimb</listEntry>
+            <listEntry value="11">@Strings.FieldActDay</listEntry>
+            <listEntry value="2">@Strings.FieldActMin</listEntry>
+            <listEntry value="13">@Strings.FieldVo2Run</listEntry>
+            <listEntry value="14">@Strings.FieldVo2Bike</listEntry>
+            <listEntry value="15">@Strings.FieldRunWk</listEntry>
+            <listEntry value="16">@Strings.FieldBikeWk</listEntry>
+            <listEntry value="21">@Strings.FieldPop</listEntry>
+            <listEntry value="20">@Strings.FieldVis</listEntry>
+            <listEntry value="3">@Strings.FieldSun</listEntry>
+            <listEntry value="19">@Strings.FieldUtc</listEntry>
+            <listEntry value="5">@Strings.FieldBattery</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.bottomField" title="@Strings.SetBottom">
+        <settingConfig type="list">
+            <listEntry value="3">@Strings.FieldSun</listEntry>
+            <listEntry value="0">@Strings.FieldBB</listEntry>
+            <listEntry value="1">@Strings.FieldSpo2</listEntry>
+            <listEntry value="4">@Strings.FieldStress</listEntry>
+            <listEntry value="17">@Strings.FieldRhr</listEntry>
+            <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="6">@Strings.FieldSteps</listEntry>
+            <listEntry value="10">@Strings.FieldDist</listEntry>
+            <listEntry value="9">@Strings.FieldKcal</listEntry>
+            <listEntry value="7">@Strings.FieldFloors</listEntry>
+            <listEntry value="8">@Strings.FieldFloorsDn</listEntry>
+            <listEntry value="12">@Strings.FieldClimb</listEntry>
+            <listEntry value="11">@Strings.FieldActDay</listEntry>
+            <listEntry value="13">@Strings.FieldVo2Run</listEntry>
+            <listEntry value="14">@Strings.FieldVo2Bike</listEntry>
+            <listEntry value="15">@Strings.FieldRunWk</listEntry>
+            <listEntry value="16">@Strings.FieldBikeWk</listEntry>
+            <listEntry value="21">@Strings.FieldPop</listEntry>
+            <listEntry value="20">@Strings.FieldVis</listEntry>
+            <listEntry value="19">@Strings.FieldUtc</listEntry>
+            <listEntry value="5">@Strings.FieldBattery</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.gaugeField" title="@Strings.SetGauge">
+        <settingConfig type="list">
+            <listEntry value="4">@Strings.GaugeStress</listEntry>
+            <listEntry value="0">@Strings.GaugeBB</listEntry>
+            <listEntry value="5">@Strings.GaugeBattery</listEntry>
+            <listEntry value="1">@Strings.GaugeSpo2</listEntry>
+            <listEntry value="18">@Strings.GaugeSleep</listEntry>
+            <listEntry value="6">@Strings.GaugeSteps</listEntry>
+            <listEntry value="7">@Strings.GaugeFloors</listEntry>
+            <listEntry value="2">@Strings.GaugeActMin</listEntry>
+        </settingConfig>
+    </setting>
+    <setting propertyKey="@Properties.showBars" title="@Strings.SetBars">
+        <settingConfig type="boolean"/>
+    </setting>
+</settings>

@@ -151,7 +151,30 @@ Modelled on the airspeed and altitude tapes of a fighter HUD, either side of the
 
 Each window has a cyan underlined header on top, the white value below and the unit in small gray. If they do not fit, the unit is left out, e.g. `150/150` shows as `150`. The `>` after each header imitates the soft-key arrows on a cockpit display: tap to open the matching page (see section 8).
 
-What the three windows show can later be changed in the settings; so can the date block's right column and the bottom row.
+### 5.1 Choosing what the windows show
+
+In the Connect IQ / Garmin Connect app (face installed from the store): face → Settings. Five places can be changed: the three data windows, the date block's right column (lunar date by default) and the bottom row (sunrise/sunset by default).  The two left data windows are narrow; the right data window, the date block's right column and the bottom row are the wide places. Progress bars can also be turned on: a thin bar under the value for fields with a goal. The font can be switched too: small rounded corners (default), chamfered corners or large rounded corners.
+
+| Header | Meaning |
+|---|---|
+| `BB>` `SPO2>` `STRESS>` | Body Battery, blood oxygen %, stress |
+| `RHR>` | Resting heart rate |
+| `SLEEP>` | Sleep score (0–100) |
+| `STEPS>` | Steps today (bar: step goal; wide places only) |
+| `DIST>` | Distance today, km |
+| `KCAL>` | Calories today, including resting (wide places only) |
+| `FLOORS>` / `FL DN>` | Floors climbed (bar: floor goal) / descended today |
+| `CLIMB>` | Ascent today, metres |
+| `ACT DAY>` / `ACT MIN>` | Intensity minutes today / this week (bar: weekly goal; `ACT MIN>` only in the right data window or the date block, where its goal fits) |
+| `VO2>` / `VO2 BIKE>` | VO2 max, running / cycling |
+| `RUN WK>` / `BIKE WK>` | Running / cycling distance this week, km |
+| `POP>` | Chance of precipitation, % |
+| `VIS>` | Visibility, km |
+| `SR>` / `SS>` | Next sunrise / sunset (wide places only) |
+| `UTC>` | UTC time with `Z` ("Zulu"), as used in aviation (wide places only) |
+| `BAT>` | Watch battery % |
+
+Where space is short (the two narrow windows, the bottom row) long values are shortened: `23456` steps show as `23.5K` or `23K`, `12.4` km as `12`; long headers too (`STRESS>` → `STR>`, `STEPS>` → `STP>`, `SLEEP>` → `SLP>`, `KCAL>` → `CAL>`, `FLOORS>` → `FLR>`, `FL DN>` → `FLD>`, `CLIMB>` → `CLB>`, `ACT MIN>` → `ACT>`, `ACT DAY>` → `ACTD>`, `VO2 BIKE>` → `VO2B>`, `RUN WK>` → `RUN>`, `BIKE WK>` → `BIKE>`, `UTC>` → `Z>`). `--` means the watch has no value (for example cycling VO2 max without a power meter).
 
 ## 6. Bottom: stress gauge, sunrise/sunset and warnings
 
@@ -161,8 +184,8 @@ On the fēnix 8 and the other 454 px watches, a gauge above the bottom row shows
 
 - `STR` on the left, the number on the right, and 10 segments of 10 points in between. The last segment fills in part, so 62 is six full segments and a fifth of the seventh.
 - Colour: cyan 0–25 (rest), green 26–50, amber 51–75, red 76–100.
-- On these watches the gauge takes over from the STRESS warning below: the bottom row only changes for BINGO.
-- What the gauge shows can later be changed in the settings (battery or Body Battery, for example).
+- The bottom row only changes for BINGO (low battery; section 6.2).
+- What the gauge shows can be changed in the settings (section 5.1): `STR` stress, `BB` Body Battery, `BAT` watch battery, `O2` blood oxygen, `SLP` sleep score, or `STP` / `FLR` / `ACT` steps, floors or weekly intensity minutes as % of the goal (the bar stops full at 100 %, the number keeps counting). Body Battery and battery turn amber and red as they run low, sleep score amber under 60.
 
 ### 6.2 Bottom row
 
@@ -171,16 +194,9 @@ Normally this row reads like a data window, with the header and value side by si
 - `SS> 1856`: sunset today at 18:56 (shown during the day).
 - `SR> 0703`: sunrise at 07:03 (shown after sunset).
 
-When a warning is active, the row becomes a square box: a full-colour border filled with dimmed 45° stripes (like hazard tape), with white text. Highest priority first:
+What it shows can be changed in the settings (section 5.1).
 
-| Priority | Shows | When | Style | Meaning |
-|---|---|---|---|---|
-| 1 | `BINGO` | battery ≤ 10% | red stripes | Aviation term for "only enough fuel to get home"; here, charge the watch |
-| 2 | `STRESS` | stress ≥ 76 | red stripes | High stress (Venu 3S only; see 6.1) |
-| 3 | `STRESS` | stress 51–75 | amber stripes | Elevated stress (Venu 3S only) |
-
-- If several apply, only the highest priority is shown.
-- When the warning clears, the row goes back to sunrise/sunset.
+**BINGO**: when the battery is at 10% or less, the row becomes a square box: a red border filled with dimmed 45° red stripes (like hazard tape), with white `BINGO`. "Bingo fuel" is the aviation term for "only enough fuel to get home"; here, charge the watch. Once charged above 10%, the row goes back to what it showed.
 
 ## 7. Always-on (screen off)
 
@@ -196,8 +212,6 @@ Tapping an element opens the watch's own matching page:
 | Left heart-rate box | Heart rate |
 | Right altitude box | Altimeter |
 | Station model | Weather |
-| BB | Body Battery |
-| SPO2 | Pulse Ox |
-| ACT MIN | Intensity minutes |
-| Stress gauge | Stress |
-| Bottom row | Sunrise/sunset; battery while BINGO is showing, stress while STRESS is showing |
+| Data windows, date block field | The page of what they show (BB → Body Battery, SPO2 → Pulse Ox, ACT MIN → intensity minutes, STEPS → steps, …; UTC opens nothing) |
+| Gauge | The page of what it shows (stress by default) |
+| Bottom row | What it shows (sunrise/sunset by default); battery while BINGO is showing |

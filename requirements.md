@@ -26,7 +26,7 @@ Not supported: the fēnix 7 family (MIP screens, 240–280 px; would need its ow
 
 - AMOLED only (no Solar/MIP build). Min API 5.1 (needed for weather cloud cover, dew point, pressure, visibility).
 - Both screens are ~12.8 px/mm, so a given pixel size is the same physical size on both.
-- 24-hour time, no seconds. No user settings yet: the options below are compile-time constants, planned as phone settings once the face is on the Connect IQ Store ([SETTINGS.md](SETTINGS.md)).
+- 24-hour time, no seconds. Phone settings (store installs): what each slot shows and the progress bars ([SETTINGS.md](SETTINGS.md)); the other options below are compile-time constants.
 - Temperature always in °C, regardless of the watch's unit setting.
 
 ## 2. Visual style
@@ -55,7 +55,7 @@ Coordinates are pixels relative to the screen centre, x right and y down; where 
    - Right: lunar month (e.g. 八月, 闰六月) over lunar day (e.g. 十八, 初一), magenta #E040E0, 36 / 29 px with 4 / 3 px strokes, 8 px between the lines. The CJK glyphs sit 2 px below the Latin baseline (lunar day at y −60 / −49), leaving 14 / 13 px to the time.
    - The right column is a slot (see 5): it shows the lunar date by default, or any data field as a wide cell with the value on the `MM/DD` baseline.
 3. **Middle row: time between the two tapes**, all centred on y = +1.
-   - Time: `HHMM`, 24-hour, no colon by default (`TIME_COLON` in `PcdView.mc` adds it; later a setting — with the colon the time is wider and can touch the tape boxes), stroke font, green. fēnix h 94 with 6 px strokes, Venu h 74 with 5 px; the digits span about ±145 / ±114 px, leaving ~10 px to the tape boxes.
+   - Time: `HHMM`, 24-hour, no colon ("23:41" would not fit between the tape boxes), stroke font, green. fēnix h 94 with 6 px strokes, Venu h 74 with 5 px; the digits span about ±145 / ±114 px, leaving ~10 px to the tape boxes.
    - Digits are monospaced and every glyph fills its full cell (the `1` has a full-width base), so all four digits are the same width with equal gaps, centred on x = 0.
 4. **Tapes at 9 (HR) and 3 (ALT) o'clock** — straight vertical tapes, slim, with no scale numbers.
    - Value box against the bezel, centred on the middle row: outer edge x ±216 (fēnix) / ±184 (Venu); fēnix 60 × 50 with 20 px value, Venu 58 × 46 with 18 px value (room for 3 digits), 3 px border (1 px inside the box edge, 2 px outside); the value stroke is 1 px wider than the mockup default (3 px). `10M` sits 5 px above the box top. The label (HR / ALT, 11 px) is inside the box above the value. No pointer: the box centre marks the current value.
@@ -69,35 +69,28 @@ Coordinates are pixels relative to the screen centre, x right and y down; where 
    | Narrow cell | header over value, centred | 100 / 80 px | data row: BB, SPO2 |
    | Wide cell | header over value, centred | 144 / 132 px | data row: ACT MIN; date block right column |
    | Row | header beside the value, tops aligned | — | bottom row: sun event |
-   | Gauge | label, 10-segment bar, value | 199 px / — | above the bottom row: stress (454 px layout only) |
+   | Gauge | label, 10-segment bar, value | 199 px / — | above the bottom row: stress by default, a setting (454 px layout only) |
 
    - Header: cyan, underlined, ending in the soft-key arrow `>` (16 px). Value: white (34 / 29 px), with an optional gray unit (16 px). No value: gray `--`. In a cell, a value plus unit too wide for the cell drops the unit (`%`, `/goal`).
    - Fields: `BB` (Body Battery), `SPO2` (%), `ACT MIN` (weekly intensity minutes `/goal` from `activeMinutesWeekGoal`), `SS` / `SR` (next sunset during the day, sunrise after sunset), `STRESS` (0–100), `BAT` (watch battery %). The lunar date is a special field for the date block's right column only. A gauge can show any field with a 0–100 scale (`Field.gauge`: STRESS, BB, BAT, SPO2 now); others show `--`.
-   - Which field each slot shows is fixed for now (below); a settings page would change `Slot.field`. Any field reads fine in any slot; long values (`150/150`) belong in a wide slot.
+   - Which field each slot shows is a phone setting (defaults below; fields and slot rules in [SETTINGS.md](SETTINGS.md) §3–4). Values too wide for a cell drop the unit, then use a shorter form; long headers have a short form for the narrow cells.
    - Always-on: slots are hidden, except the lunar date (dimmed).
 
    **Data row** (divider line above at y = pY − 6, vertical dividers between the cells): narrow · narrow · wide = `BB>` · `SPO2>` · `ACT MIN>`, spanning ±172 / ±146 px from y +72 / +60. Header baseline 21 / 19 px and value baseline 70 / 62 px below the row top (~10 px between the header underline and the value). fēnix fits BB `100`, SPO2 `100%` and `150/150`; Venu fits `100` and `150/150`, and SPO2 `100` drops the `%`.
-   - Optional thin progress bar under a data row value, only for fields with a goal (ACT MIN now; steps or floors later). Off by default (`SHOW_BARS` in `PcdView.mc`); the layout keeps ~17 px free above the bottom row for it.
+   - Optional thin progress bar under a data row value, only for fields with a goal (ACT MIN, STEPS, FLOORS). Off by default (phone setting `showBars`); the layout keeps ~17 px free above the bottom row for it.
 
    **Date block right column**: see 2 (wide cell, value on the `MM/DD` baseline, header 14 px above the value top).
 
-   **Gauge** (454 px layout only, `Layout.GAUGE`, on by default; field `Layout.GAUGE_FIELD`, stress by default). Styled after the F-35 PCD's segmented engine and fuel gauges, between the data row and the bottom row:
+   **Gauge** (454 px layout only, `Layout.GAUGE`, on by default; field: phone setting `gaugeField` ([SETTINGS.md](SETTINGS.md) §3), stress by default). Styled after the F-35 PCD's segmented engine and fuel gauges, between the data row and the bottom row:
    - Bar: 10 segments of 19 px with 1 px gaps (199 px, centred), 6 px tall, bottom at y +170. Each segment is 10 points; the last one fills in proportion (62 = 6 full segments and 20 % of the 7th). Filled parts are in the status colour; empty segments are dim #3A3A3A outlines. A 1 px gray end mark at each end, 3 px taller than the bar. No quarter ticks.
    - Label left of the bar (cyan; `STR`, `BB`, `BAT`, `O2`), value right of it (status colour), both in the same 14 px font (the tape value glyphs), 6 px from the bar and top-aligned with it. Labels are 3 characters at most: a longer one would reach the bezel.
-   - Status colours: STRESS ≤ 25 cyan, 26–50 green, 51–75 amber, ≥ 76 red (the STRESS warning levels); BB red ≤ 10, amber ≤ 25; BAT red ≤ 10 (BINGO), amber ≤ 20; otherwise green.
-   - While the gauge shows stress, the STRESS warnings are off (the gauge already turns amber / red at the same levels); BINGO still replaces the bottom row. The Venu 3S (no gauge) keeps the STRESS warnings.
+   - Status colours: STRESS ≤ 25 cyan, 26–50 green, 51–75 amber, ≥ 76 red (Garmin's rest / low / medium / high); BB red ≤ 10, amber ≤ 25; BAT red ≤ 10 (BINGO), amber ≤ 20; otherwise green.
+   - The gauge is the only stress warning: the STRESS warning boxes were removed (0.2.0). BINGO still replaces the bottom row.
 
 6. **Bottom row** — a row-style slot, the sun event by default: `SS> 1856` / `SR> 0703`, centred, value baseline y +212 on the 454 px layout with the gauge (as far down as it goes: the value's lower right corner is ~3 px inside the bezel; +203 without the gauge) / +177 on the Venu.
-   - A warning replaces it, highest priority first (the STRESS warnings can be turned off with `STRESS_WARN` in `Data.mc`, on by default; later a setting; they are also off while the gauge shows stress):
+   - BINGO (battery ≤ 10%, red stripes) replaces it; otherwise it shows the slot's field in row style, no frame.
 
-     | Priority | Warning | Trigger | Style |
-     |---|---|---|---|
-     | 1 | `BINGO` | battery ≤ 10% | red stripes |
-     | 2 | `STRESS` | stress ≥ 76 | red stripes |
-     | 3 | `STRESS` | stress 51–75 | amber stripes |
-     | 4 | the slot's field | otherwise | row style, no frame |
-
-     Warning style: a square-cornered box (fēnix 132 × 30 at y +177 with the gauge, +168 without; Venu 128 × 28 at y +150) with a 2 px border in the full colour, filled with 45° `/` hazard stripes in a dimmed shade (red #B02222, amber #9A7410; stripe 6 px wide every 16 px on fēnix, 5.2 px every 14 px on Venu), clipped at the box edges. White text at the tape-value size (20 / 18 px) with a 1 px black halo so letters stay whole across the stripes.
+     BINGO style: a square-cornered box (fēnix 132 × 30 at y +177 with the gauge, +168 without; Venu 128 × 28 at y +150) with a 2 px red border, filled with 45° `/` hazard stripes in dimmed red #B02222 (stripe 6 px wide every 16 px on fēnix, 5.2 px every 14 px on Venu), clipped at the box edges. White text at the tape-value size (20 / 18 px) with a 1 px black halo so letters stay whole across the stripes.
 7. **Missing data** — shown as `--` in gray.
    - Weather missing: an empty circle with no numbers.
    - Weather observation older than 3 h: the whole station model is dimmed.
@@ -254,7 +247,7 @@ Implemented with `Complications.Id(type)`. Slot taps use each slot's tap rectang
 | A slot showing ACT MIN | Intensity minutes (`INTENSITY_MINUTES`) |
 | A slot showing SS / SR | `SUNSET` / `SUNRISE` |
 | A slot or gauge showing STRESS / BAT | `STRESS` / `BATTERY` |
-| Bottom row while a warning shows | `BATTERY` (BINGO) / `STRESS` |
+| Bottom row while BINGO shows | `BATTERY` |
 | Date block right column with the lunar date | nothing |
 
 ## 8. Open items
@@ -265,6 +258,6 @@ Implemented with `Complications.Id(type)`. Slot taps use each slot's tap rectang
 ## 9. Distribution
 
 - For now, the watch face is sideloaded onto the user's own watches.
-- It will be published on the Connect IQ Store, which also enables phone settings ([SETTINGS.md](SETTINGS.md)). The working name is "PCD Cockpit"; the draft listing is in [STORE.md](STORE.md).
+- Published on the Connect IQ Store as "PCD Cockpit" (0.1.0 submitted 2026-10-05; listing in [STORE.md](STORE.md)); store installs get the phone settings ([SETTINGS.md](SETTINGS.md)).
 - China: there is no separate upload. Apps approved on the global store (apps.garmin.com) are copied to the China store (apps.garmin.cn) under the same app id; forum reports say the copy can lag behind. A beta app is only visible to the developer's global account, so a watch paired with a China-region account cannot install it: test by sideloading, then publish the release version.
 - Package: `.\build.ps1 -Export` writes `bin\PcdCockpit.iq` (every product in the manifest, release build, signed with the developer key). Every store update must be signed with the same key.

@@ -25,16 +25,17 @@ class Layout {
     var cellW as Array<Number>;   // data row cell widths, left to right (sum = 2 * pX); dividers sit between
     // Bottom: warning box (botY, botH, botW; label tabH px) and the sun row's value baseline sunB.
     var botY as Number, botH as Number, botW as Number, tabH as Number, sunB as Number;
-    // Everything that shows a Field (Slots.mc), in tap-test order. Fields are fixed for now; a settings page
-    // would change Slot.field.
+    // Widest bottom row (header + value + unit) that stays inside the bezel: the sun row "SS>1856" is
+    // 146 px on the fēnix (its lower right corner ~2 px inside the bezel) and 132 px on the Venu 3S (Fit.row).
+    var rowW as Number = 150;
+    // Everything that shows a Field (Slots.mc), in tap-test order. The fields come from Settings; the
+    // layout is rebuilt when they change (PcdView.applySettings).
     var slots as Array<Slot>;
 
     // Gauge row between the data row and the bottom row (454 px layout only; the 390 px Venu 3S has no room).
-    // On: the bottom row moves down towards the bezel and the gauge takes its old place. Its field is
-    // GAUGE_FIELD (any field with a Field.gauge case); showing STRESS turns the STRESS warning off
-    // (PcdView.onLayout), since the gauge already turns amber / red at the same levels.
+    // On: the bottom row moves down towards the bezel and the gauge takes its old place. Its field is the
+    // phone setting gaugeField (Field.gaugeable, stress by default).
     const GAUGE = true;
-    const GAUGE_FIELD = Field.STRESS;
     var gauge as Boolean = false;
     // Gauge geometry: bar bottom gB, bar gW px wide; label and value gValH px, top-aligned with the bar. The
     // label's left end must stay inside the bezel: at most 3 characters.
@@ -62,6 +63,7 @@ class Layout {
             pY = 60; pH = 78; pX = 146; hdrB = 19; valH = 29; hdrH = 16; unitH = 16;
             winN = 80; winW = 132;    // condensed fonts: BB "100", ACT MIN "150/150"; SPO2 "100" drops the %
             botY = 150; botH = 28; botW = 120; tabH = 18; sunB = 177;
+            rowW = 140;
         }
         cellW = [winN, winN, winW];
 
@@ -79,23 +81,23 @@ class Layout {
         }
 
         // Bottom row first: its tap area reaches below the data row.
-        slots = [new Slot(Slot.ROW, Field.SUN, 0, 0, 0, sunB,
+        var fields = Settings.fields;
+        slots = [new Slot(Slot.ROW, fields[Settings.BOTTOM], 0, 0, 0, sunB,
                           [-botW / 2 - 12, rowTop, botW / 2 + 12, 999], false, true)] as Array<Slot>;
         if (gauge) {
-            slots.add(new Slot(Slot.GAUGE, GAUGE_FIELD, 0, gW, 0, gB, [-130, cellsEnd, 130, rowTop], false, false));
+            slots.add(new Slot(Slot.GAUGE, fields[Settings.GAUGE], 0, gW, 0, gB, [-130, cellsEnd, 130, rowTop], false, false));
         }
         // Data row: narrow, narrow, wide.
         var styles = [Slot.NARROW, Slot.NARROW, Slot.WIDE];
-        var fields = [Field.BB, Field.SPO2, Field.ACT_MIN];
         var left = -pX;
         for (var i = 0; i < 3; i++) {
             var w = cellW[i];
-            slots.add(new Slot(styles[i], fields[i], left + w / 2, w, pY + hdrB, pY + pH - 16,
+            slots.add(new Slot(styles[i], fields[Settings.DATA1 + i], left + w / 2, w, pY + hdrB, pY + pH - 16,
                                [left, pY - 6, left + w, cellsEnd], true, false));
             left += w;
         }
         // Date block right column: a wide cell whose value sits on the MM/DD baseline.
-        slots.add(new Slot(Slot.WIDE, Field.LUNAR, dsX, winW, dsY2 - valH - 14, dsY2,
+        slots.add(new Slot(Slot.WIDE, fields[Settings.DATE], dsX, winW, dsY2 - valH - 14, dsY2,
                            [1, dsY2 - valH - 34, dsX + winW / 2, dsY2 + 9], false, false));
     }
 }

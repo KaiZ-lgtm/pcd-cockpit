@@ -3,12 +3,14 @@
 #   .\build.ps1 -Device venu3s     -> one device; -Device all -> every product in manifest.xml
 #   .\build.ps1 -Run -Device venu3s -> build and launch in the simulator
 #   .\build.ps1 -Export            -> bin\PcdCockpit.iq for the Connect IQ Store (every product in manifest.xml)
+#   .\build.ps1 -Test              -> unit tests (source\Tests.mc) in the simulator, on the first device
 param(
     [string[]]$Device = @('fenix847mm', 'venu3s'),
     [string]$Key = "$PSScriptRoot\developer_key",
     [switch]$Run,
     [switch]$Demo,     # cycle synthetic data scenarios (simulator testing only)
-    [switch]$Export    # store package, release build (no debug info)
+    [switch]$Export,   # store package, release build (no debug info)
+    [switch]$Test      # build with --unit-test and run the tests
 )
 $ErrorActionPreference = 'Stop'
 $java = 'C:\Program Files\Java\jdk-27\bin'
@@ -22,6 +24,21 @@ if ($Export) {
     if ($Demo) { throw "-Export and -Demo cannot be combined: the store package must not contain demo data" }
     & "$bin\monkeyc.bat" -e -r -f monkey.jungle -o bin\PcdCockpit.iq -y $Key -w
     if ($LASTEXITCODE -ne 0) { throw "monkeyc export failed" }
+    return
+}
+
+if ($Test) {
+    $d = $Device[0]
+    $out = "bin\PcdCockpit-test-$d.prg"
+    & "$bin\monkeyc.bat" -f monkey.jungle -d $d -o $out -y $Key -w --unit-test
+    if ($LASTEXITCODE -ne 0) { throw "monkeyc (unit tests) failed for $d" }
+    if (-not (Get-Process simulator -ErrorAction SilentlyContinue)) {
+        Start-Process "$bin\simulator.exe"
+        Start-Sleep -Seconds 6
+    }
+    $log = & "$bin\monkeydo.bat" $out $d /t | Out-String
+    $log
+    if ($log -notmatch 'PASSED') { throw "unit tests failed" }
     return
 }
 
