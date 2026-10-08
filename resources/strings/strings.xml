@@ -1,3 +1,53 @@
 <strings>
     <string id="AppName">PCD Cockpit</string>
+
+    <!-- Phone settings: titles -->
+    <string id="SetFont">Font</string>
+    <string id="SetField1">Data window 1 (left)</string>
+    <string id="SetField2">Data window 2 (middle)</string>
+    <string id="SetField3">Data window 3 (right, wide)</string>
+    <string id="SetDate">Date block, right column</string>
+    <string id="SetBottom">Bottom row</string>
+    <string id="SetGauge">Gauge above the bottom row (fenix-size watches)</string>
+    <string id="SetBars">Progress bars under the data windows (fields with a goal)</string>
+
+    <!-- Phone settings: fields, named as on the face -->
+    <string id="FieldLunar">Lunar date</string>
+    <string id="FieldBB">BB - Body Battery</string>
+    <string id="FieldSpo2">SPO2 - Pulse Ox</string>
+    <string id="FieldActMin">ACT MIN - Intensity minutes this week / goal (wide windows only)</string>
+    <string id="FieldSun">SR / SS - Next sunrise or sunset (wide slots only)</string>
+    <string id="FieldStress">STRESS - Stress</string>
+    <string id="FieldBattery">BAT - Watch battery</string>
+    <string id="FieldSteps">STEPS - Steps today (wide slots only)</string>
+    <string id="FieldFloors">FLOORS - Floors climbed today</string>
+    <string id="FieldFloorsDn">FL DN - Floors descended today</string>
+    <string id="FieldKcal">KCAL - Calories today (wide slots only)</string>
+    <string id="FieldDist">DIST - Distance today (km)</string>
+    <string id="FieldActDay">ACT DAY - Intensity minutes today</string>
+    <string id="FieldClimb">CLIMB - Ascent today (m)</string>
+    <string id="FieldVo2Run">VO2 - VO2 max, running</string>
+    <string id="FieldVo2Bike">VO2 BIKE - VO2 max, cycling</string>
+    <string id="FieldRunWk">RUN WK - Running distance this week (km)</string>
+    <string id="FieldBikeWk">BIKE WK - Cycling distance this week (km)</string>
+    <string id="FieldRhr">RHR - Resting heart rate</string>
+    <string id="FieldSleep">SLEEP - Sleep score</string>
+    <string id="FieldUtc">UTC - Zulu time (wide slots only)</string>
+    <string id="FieldVis">VIS - Visibility (km)</string>
+    <string id="FieldPop">POP - Chance of precipitation</string>
+
+    <!-- Phone settings: gauge choices (label on the face) -->
+    <string id="GaugeStress">STR - Stress</string>
+    <string id="GaugeBB">BB - Body Battery</string>
+    <string id="GaugeBattery">BAT - Watch battery</string>
+    <string id="GaugeSpo2">O2 - Pulse Ox</string>
+    <string id="GaugeSleep">SLP - Sleep score</string>
+    <string id="GaugeSteps">STP - Steps, % of goal</string>
+    <string id="GaugeFloors">FLR - Floors, % of goal</string>
+    <string id="GaugeActMin">ACT - Intensity minutes, % of weekly goal</string>
+
+    <!-- Phone settings: font styles -->
+    <string id="FontG">Small rounded corners</string>
+    <string id="FontD">Chamfered corners</string>
+    <string id="FontE">Large rounded corners</string>
 </strings>

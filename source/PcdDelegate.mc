@@ -37,13 +37,7 @@ class PcdDelegate extends WatchUi.WatchFaceDelegate {
             var s = slots[i];
             var r = s.hit;
             if (x < r[0] || x > r[2] || y < r[1] || y >= r[3]) { continue; }
-            if (s.warn) {
-                switch (d.warning()) {
-                    case Data.WARN_BINGO: return Complications.COMPLICATION_TYPE_BATTERY;
-                    case Data.WARN_STRESS_HIGH:
-                    case Data.WARN_STRESS_MED: return Complications.COMPLICATION_TYPE_STRESS;
-                }
-            }
+            if (s.warn && d.bingo()) { return Complications.COMPLICATION_TYPE_BATTERY; }
             var t = Field.complication(s.field, d);
             if (t != null) { return t; }
         }

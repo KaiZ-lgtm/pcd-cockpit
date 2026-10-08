@@ -1,107 +1,106 @@
-# Watch-face settings — design
+# Watch-face settings
 
-Status: design only, nothing below is built yet. Today every option is a compile-time constant; this doc plans how they become user settings.
-Related: [requirements.md](requirements.md) (what the face shows), [README.md](README.md) (build and source layout).
+Status: built (2026-10-08) for the next store version (0.2.0); not yet released. Phone settings only.
+Related: [requirements.md](requirements.md) (what the face shows), [README.md](README.md) (build, tests and source layout).
 
-## 1. Goals
+## 1. Scope
 
-- Let the wearer change a few look-and-feel choices without rebuilding: font style, time colon, what each slot shows, progress bars, STRESS warning, the gauge.
-- Settings are changed in the phone app (Connect IQ / Garmin Connect), which needs the face to be installed from the Connect IQ Store. The face will be published there; until then it stays sideloaded and uses the defaults.
-- Keep the current look as the default, so a watch with no saved settings looks exactly like today's build.
-- Keep memory and draw time as they are: only the chosen font style is loaded, and nothing is re-read on every frame.
+The wearer can choose the font style, what each of the five slots and the gauge show, and turn the progress bars on. Everything else stays fixed:
 
-Not goals: changing units (°C, hPa and metres stay fixed by design), changing colours, per-device layouts.
+| Not a setting | Why |
+|---|---|
+| Time colon | Does not fit: "23:41" is ~328 px wide on the fēnix (room between the tape boxes ~308 px) and ~255 px on the Venu 3S (~248 px) |
+| STRESS warning | Removed (stress shows in the gauge on fēnix-size watches, or in any slot) |
+| Gauge on / off | Always on (454 px layout); what it shows is a setting (§3) |
+| Units, colours | °C, hPa, km, m and the colour meanings stay fixed |
 
-## 2. Options that already exist as constants
+The defaults are the look of the build before settings existed (checked pixel for pixel, §6), except that the STRESS warning box no longer appears on the Venu 3S.
 
-| Constant | Where | Values | Default |
+## 2. How the wearer changes settings
+
+Phone only: Connect IQ / Garmin Connect app (or Garmin Express) → the face → Settings. This needs the face installed from the Connect IQ Store; a sideloaded `.prg` always uses the defaults.
+
+Not used:
+- **Native watch-face editor** (`WatchFaceConfig`, API 5.1: long-press the face → Edit): only fēnix 8 / 8 Pro, FR970 and Venu 4 among our watches, and it only offers styles, complications and colours. Parked.
+- **On-watch settings menu** (`AppBase.getSettingsView`): would duplicate the phone form.
+
+## 3. Settings
+
+| Property | Slot | Default | Choices |
 |---|---|---|---|
-| `FONT_STYLE` | `PcdView.mc` | 0 = D chamfered, 1 = G small rounded, 2 = E large rounded | 1 (G) |
-| `TIME_COLON` | `PcdView.mc` | on / off (with the colon the time is wider and can touch the tape boxes) | off |
-| `SHOW_BARS` | `PcdView.mc` | on / off (bar only for fields with a goal) | off |
-| `STRESS_WARN` | `Data.mc` | on / off (BINGO always stays on); also off while the gauge shows stress | on |
-| `GAUGE` | `Layout.mc` | on / off (454 px layout only) | on |
-| `GAUGE_FIELD` | `Layout.mc` | a field with a `Field.gauge` case (STRESS, BB, BATTERY, SPO2) | STRESS |
-| `Slot.field` | `Layout.mc` (`slots`) | the `Field` each slot shows | data row BB · SPO2 · ACT MIN; date block lunar date; bottom row sun event; gauge stress |
+| `fontStyle` | — (all text) | 1, G | 0 = D chamfered corners, 1 = G small rounded corners, 2 = E large rounded corners (`Settings.fontStyle`; only the chosen style is loaded, the old one is dropped first) |
+| `field1` | Data window 1 (left, narrow) | BB | any field from §4 except the **wide only** ones |
+| `field2` | Data window 2 (middle, narrow) | SPO2 | same as `field1` |
+| `field3` | Data window 3 (right, wide) | ACT MIN | any field from §4 |
+| `dateField` | Date block, right column (wide) | Lunar date | Lunar date or any field from §4 |
+| `bottomField` | Bottom row (header beside value, at most 150 / 140 px) | Sun event | any field from §4 except ACT MIN (`Field.rowOk`: it would lose its goal). BINGO / STRESS warnings still replace it |
+| `gaugeField` | Gauge above the bottom row (454 px layout; ignored on the Venu 3S) | Stress | `STR` stress, `BB` Body Battery, `BAT` battery, `O2` SpO2, `SLP` sleep score, `STP` / `FLR` / `ACT` steps, floors, weekly intensity minutes as % of goal (`Field.gaugeable`). Showing stress turns the STRESS warning off |
+| `showBars` | — | off | Progress bar under data window values that have a goal (ACT MIN, STEPS, FLOORS) |
 
-Each one is read in exactly one place, so turning it into a setting only changes where the value comes from. The slots were built for this: `Layout.slots` lists every place that shows a field, and both drawing and tapping read `Slot.field` from it.
+Values are `Field` ids (`source/Fields.mc`). They are stored in the wearer's settings, so ids are only ever appended, never renumbered (unit test `testFieldIdsStable`). A missing, wrongly typed or not-allowed value falls back to the slot's default (`Settings.pick`).
 
-## 3. How the wearer changes settings
+## 4. Fields
 
-Connect IQ offers two routes:
+In the phone lists in this order (`resources/settings/settings.xml`; each list starts with its slot's default):
 
-| Route | How | Works when sideloaded? |
-|---|---|---|
-| Phone (Connect IQ / Garmin Connect app) | `resources/settings/properties.xml` + `settings.xml`; the phone shows the form and sends the values; the app gets `onSettingsChanged()` | No — per the Garmin developer forums, phone settings need the app installed from the Connect IQ Store (a private beta listing is enough) |
-| On the watch | `AppBase.getSettingsView()` returns a `WatchUi.Menu2` and its delegate; the watch shows it under the watch face's settings entry | Yes |
+| Id | Header (short form) | Shows | Source | Bar | Tap opens |
+|---|---|---|---|---|---|
+| 0 | `BB>` | Body Battery | SensorHistory | | Body Battery |
+| 1 | `SPO2>` | Pulse Ox, `97%` | Activity / SensorHistory | | Pulse Ox |
+| 4 | `STRESS>` (`STR>`) | Stress | ActivityMonitor / SensorHistory | | Stress |
+| 17 | `RHR>` | Resting heart rate | UserProfile | | Heart rate |
+| 18 | `SLEEP>` (`SLP>`) | Sleep score 0–100 | Complication (API 6.0.2) | | Sleep score |
+| 6 | `STEPS>` (`STP>`) | Steps today — **wide only** (in a narrow cell it would be `9K` on the Venu 3S) | ActivityMonitor | step goal | Steps |
+| 10 | `DIST>` | Distance today, `8.4 KM` | ActivityMonitor | | Steps |
+| 9 | `KCAL>` (`CAL>`) | Calories today (incl. resting) — **wide only** | ActivityMonitor | | Calories |
+| 7 | `FLOORS>` (`FLR>`) | Floors climbed today | ActivityMonitor | floor goal | Floors |
+| 8 | `FL DN>` (`FLD>`) | Floors descended today | ActivityMonitor | | Floors |
+| 12 | `CLIMB>` (`CLB>`) | Ascent today, `312 M` | ActivityMonitor | | Floors |
+| 11 | `ACT DAY>` (`ACTD>`) | Intensity minutes today | ActivityMonitor | | Intensity minutes |
+| 2 | `ACT MIN>` (`ACT>`) | Intensity minutes this week, `95/150` — **wide windows only**, not the bottom row (both would drop the goal) | ActivityMonitor | weekly goal | Intensity minutes |
+| 13 | `VO2>` | VO2 max, running | UserProfile | | VO2 max (run) |
+| 14 | `VO2 BIKE>` (`VO2B>`) | VO2 max, cycling (needs a power meter) | UserProfile | | VO2 max (bike) |
+| 15 | `RUN WK>` (`RUN>`) | Running distance this week, km | Complication | | Weekly run distance |
+| 16 | `BIKE WK>` (`BIKE>`) | Cycling distance this week, km | Complication | | Weekly bike distance |
+| 21 | `POP>` | Chance of precipitation, % | Weather | | Weather |
+| 20 | `VIS>` | Visibility, km | Weather | | Weather |
+| 3 | `SR>` / `SS>` | Next sunrise or sunset, `1856` — **wide only** | Weather | | Sunrise / sunset |
+| 19 | `UTC>` (`Z>`) | UTC (Zulu) time, `1442Z` — **wide only** | clock | | — |
+| 5 | `BAT>` | Watch battery, % | System | | Battery |
+| -1 | (CJK) | Lunar date — **date block only** | Lunar.mc | | — |
 
-**Decision:** the phone app is the route. The face will be published on the Connect IQ Store (a private beta listing first is enough to test settings on the real watches). All settings, including the font style, live in the phone form. An on-watch menu is not planned; if one is wanted later, it can write the same properties.
+Fitting (`Fit` in `Slots.mc`). In a cell: a header within 10 px of the cell width uses the short form in brackets; a value + unit wider than the cell drops the unit, then tries the field's shorter forms in order. Counts from 1,000 up: `23456` → `23.5K` → `23K`; km under 100: `12.4` → `12`. In the bottom row (at most `Layout.rowW`: 150 px fēnix, 140 px Venu 3S, as wide as the original `SS>1856`): value with unit, without, then the shorter forms, each with the full and then the short header. Unit test `testEveryFieldFits` checks every field in every slot it is allowed in, on both layouts, with its widest value. Narrow cells hold 3 digits, or `8.6K` on the fēnix (100 px; Venu 3S 80 px); the wide-only fields have 4 digits that cannot be shortened.
 
-Publishing notes:
-- The store build must be signed with the same developer key as every later update (`developer_key` in the project folder; keep a backup).
-- Keep the app id in `manifest.xml` unchanged. To be safe, delete the sideloaded `.prg` from `GARMIN\APPS` before installing the store version, so the watch does not end up with two copies (not yet checked how the watch handles both).
+Fonts: the value font has `.` and `K`, the unit font `K`, `M` and `Z` (FontGen). `.` has its own narrow advance (2K + 2 grid units, `_adv[4]`).
 
-## 4. Settings list
+Availability differs per watch and is only known at run time (e.g. cycling VO2 max, sleep score on older firmware): no value shows `--`.
 
-| Key (property id) | Type | Choices | Default | Replaces |
-|---|---|---|---|---|
-| `fontStyle` | number (list) | D chamfered / G small rounded / E large rounded | 1 (G) | `FONT_STYLE` |
-| `timeColon` | boolean | on / off | false | `TIME_COLON` |
-| `field1`, `field2`, `field3` | number (list of `Field` ids) | see §6 | BB, SPO2, ACT_MIN | data row slots' `field` |
-| `dateField` | number (list) | Lunar date, or any field from §6 | lunar | date block slot's `field` |
-| `bottomField` | number (list) | Sun event, or any field from §6 | sun event | bottom row slot's `field` |
-| `showBars` | boolean | on / off | false | `SHOW_BARS` |
-| `gauge` | boolean | on / off (ignored on the Venu 3S) | true | `GAUGE` (the layout is rebuilt: the bottom row moves) |
-| `gaugeField` | number (list) | Stress, Battery, Body Battery, SpO2 (fields with a gauge case) | stress | the gauge slot's `field` |
-| `stressWarn` | boolean | on / off | true | `STRESS_WARN` (a gauge showing stress still turns it off) |
+Later, as small icons in free space rather than fields: unread notifications, alarms, phone connection.
 
-Order in the phone form: Font style → Time colon → Date block field → Data window 1 / 2 / 3 → Gauge → Gauge field → Bottom row field → Progress bars → STRESS warning. Labels and list entries are strings in `resources/strings/strings.xml`, in English like the rest of the face; field names use the same words as on the face (`BB`, `SPO2`, `ACT MIN`).
+## 5. Code
 
-Candidates for later (not in the first version): BINGO threshold (10 / 15 / 20 %).
+| File | Does |
+|---|---|
+| `resources/settings/properties.xml` | Keys and defaults |
+| `resources/settings/settings.xml` | The phone form: one list per slot, the bars toggle |
+| `resources/strings/strings.xml` | Setting titles and field names (English, as on the face) |
+| `source/Settings.mc` | `load()` reads the properties with fallbacks; `allowed()` = which fields each slot takes |
+| `source/Fields.mc` | Per field: header, short header, value / unit / progress / shorter forms, tap target |
+| `source/Data.mc` | Reads the new values once a minute (`readActivity`, `readProfile`, weather, UTC) |
+| `source/Layout.mc` | Builds the slots from `Settings.fields` |
+| `source/PcdApp.mc` | `onSettingsChanged()` → `Settings.load()`, `PcdView.applySettings()` (rebuilds the layout; reloads the fonts only if the style changed) |
 
-## 5. Code design
+## 6. Testing
 
-1. **`resources/settings/properties.xml` (new):** declares every key with its default. **`resources/settings/settings.xml` (new):** the phone form — a list for `fontStyle` and each field key, a toggle for each boolean, each bound to its property with `propertyKey="@Properties.<key>"`.
-2. **`source/Settings.mc` (new):** a module holding the current values as module variables, filled by `Settings.load()` from `Application.Properties.getValue(key)`. Every read falls back to the default above if the key is missing or has the wrong type (first run, or an older saved version). The rest of the code reads `Settings.fontStyle` etc. instead of the constants. Called once at start.
-3. **Applying a change:** `PcdApp.onSettingsChanged()` calls `Settings.load()`, then `PcdView.applySettings()`, then `WatchUi.requestUpdate()`.
-   - Font style changed → drop the current fonts (set the `_f*` fields to null) *before* loading the new style, so two styles are never in memory at once; then run the same loading code as `onLayout`.
-   - Fields changed → set `field` on the matching slots in `Layout.slots` (positions and widths stay fixed, §6).
-   - Gauge on / off → rebuild the `Layout` (it moves the bottom row), then set `Data.stressWarn` again as `onLayout` does.
-   - The rest (colon, bars, stress) is read at draw time from `Settings`; nothing to rebuild.
-4. **Unchanged:** the always-on layer, burn-in shift, tap targets (the delegate already reads `Slot.field` from `Layout.slots`), and the demo build (demo data ignores settings except the ones it exercises).
+- **Unit tests** (`.\build.ps1 -Test`, `source/Tests.mc`): settings fallbacks and slot rules, default slots per layout, field ids, value formats, header widths, lunar dates (including the 2027 Spring Festival correction).
+- **Pixel regression** (`.\tools\regress.ps1`): fixed data, time and date; fēnix 8 and Venu 3S × everyday / BINGO / amber stress × active / always-on, compared with `tests/golden/`. With default settings every capture must match exactly.
+- **Showcase** (`.\tools\regress.ps1 -Show <5 field ids> [-Bars] [-Wide]`): captures with chosen fields, for eyeballing new fields; no comparison.
+- **Simulator settings editor**: File > Edit Persistent Storage > Edit Application.Properties data.
+- **Real watches**: phone settings only work for store installs. Before release, upload a **beta** (Connect IQ "Beta App" checkbox) built with a separate app id in `manifest.xml`, install it from the store, change each setting from the phone, check the face updates and survives a reboot; then switch the app id back for the release upload.
 
-## 6. Slots: choosing fields
+## 7. Release checklist (0.2.0)
 
-Five slots in three styles, plus the gauge on the 454 px layout (requirements §3.5): the data row is narrow · narrow · wide cells (fēnix 100 / 100 / 144 px, Venu 80 / 80 / 132 px, `Layout.winN` / `winW`), the date block's right column is a wide cell, the bottom row is a row (header beside the value), and the gauge is a 10-segment bar for 0–100 fields. Positions and widths stay fixed whatever is chosen:
-
-- Short values (`100`, `97%`) fit any slot; values with a goal or many digits (`150/150`, steps) belong in a wide slot.
-- In a cell, if value + unit does not fit, the unit is dropped (e.g. `150/150` in a narrow slot shows `150`). The bottom row has room for any value.
-- The lunar date is only offered for the date block; the warnings (BINGO / STRESS) keep replacing the bottom row whatever it shows.
-- The phone form can offer every field in every slot; its help text says which ones read best in the wide slots.
-- The same field may be picked twice; nothing breaks.
-
-- The gauge only offers fields with a `Field.gauge` case (a 0–100 scale); a 0–100 field added later (sleep score, for example) needs one case there as well.
-
-New fields to offer, each = one enum value plus a case in `header`, `read` and `complication` in `Fields.mc` (Stress and Battery are already there, as `STRESS>` and `BAT>`):
-
-| Field | Header | Widest text | Bar (has goal) | Note |
-|---|---|---|---|---|
-| Steps | `STEPS>` | `99.9K` | yes (step goal) | Under 10,000 shown in full (`9876`); from 10,000 as thousands with one decimal (`12.3K`). The value font needs `.` and `K` added in FontGen |
-| Floors | `FLOORS>` | `99/10` | yes | |
-| Resting HR | `RHR>` | `100` | no | |
-| Respiration | `RESP>` | `30` | no | |
-| Sleep score | `SLP>` | `100` | no | From the `SLEEP_SCORE` complication; 0–100, so also a gauge field. The closest readable stand-in for Training Readiness, which Connect IQ does not expose |
-| Calories | `KCAL>` | `4500` | yes, if a goal exists | |
-
-## 7. Testing
-
-- Simulator: set values with its app-settings editor (it reads `settings.xml`), check each option on both watches, and check that a missing or wrong-typed value falls back to the default.
-- Memory: switch font style back and forth in the simulator and watch peak memory; it must stay about where it is today (one style loaded).
-- Real watches: install the private beta from the store, change each setting from the phone, and check that the face updates and the values survive a reboot.
-- Burn-in and always-on are not touched; no need to re-run the 24-hour heat map unless the always-on layer changes.
-
-## 8. Decisions
-
-- Settings route: phone app, after publishing on the Connect IQ Store (private beta first).
-- Font style: in the phone settings.
-- Steps: `12.3K` from 10,000 up.
+1. Unit tests and regression pass.
+2. Beta test on the fēnix 8 and the Venu 3S (§6).
+3. App id back to the production id; `.\build.ps1 -Export`; upload as a new version of the existing store app (same `developer_key`).
+4. Update the store text (settings, new fields) and the GitHub link (`KaiZ-lgtm`).

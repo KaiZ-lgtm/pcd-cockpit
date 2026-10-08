@@ -1,4 +1,7 @@
 project.manifest = manifest.xml
+# Only this project's own folders (tools\regress.ps1 keeps a patched copy under tests\work\).
+base.sourcePath = source
+base.resourcePath = resources
 base.excludeAnnotations = demo
 # Other 454 px round AMOLED watches: same display as the fēnix 8 47mm; share its fonts and icon
 # (the compiler scales the icon where the launcher icon size differs).

@@ -95,6 +95,7 @@ public class FontGen {
             {"/", "0,12 8,0"}, {"-", "1,6 7,6"}, {">", "0,1 8,6 0,11"},
             {"%", "0,12 8,0; 0,0 2,0 2,2 0,2 Z; 6,10 8,10 8,12 6,12 Z"},
             {":", "1.5,3.6 1.5,4.4; 1.5,8.6 1.5,9.4"},                        // time colon, centred in its advance
+            {".", "1.2,11.2 1.2,11.8"},                                      // decimal point (narrow advance, FontGen.adv)
         };
         for (String[] e : t) GL2.put(e[0].charAt(0), e[1]);
     }
@@ -145,8 +146,8 @@ public class FontGen {
         List<Spec> s = new ArrayList<>();
         double timeH = big ? 94 : 74, textH = big ? 25 : 21, tapeV = big ? 20 : 18, hdr = 16,
                val = big ? 34 : 29, unit = 16, tab = tapeV, lun = big ? 36 : 29, date = big ? 30 : 25;
-        s.add(new Spec("FTime", timeH, big ? 6 : 5, DIG + ":"));         // about the old weight ratio (106 / 7, 86 / 6)
-        s.add(new Spec("FTimeAod", timeH, 2.5, DIG + ":"));              // always-on: thin but readable
+        s.add(new Spec("FTime", timeH, big ? 6 : 5, DIG));               // about the old weight ratio (106 / 7, 86 / 6)
+        s.add(new Spec("FTimeAod", timeH, 2.5, DIG));                    // always-on: thin but readable
         s.add(new Spec("FText", textH, def(textH), DIG + "-"));           // station model numbers
         s.add(new Spec("FDate", date, 3, AZ + DIG + "/"));               // weight of the earlier 32 / 27 px date
         s.add(new Spec("FDateAod", date, 2, AZ + DIG + "/"));
@@ -155,15 +156,15 @@ public class FontGen {
         s.add(new Spec("FGaugeVal", 14, 2, AZ + DIG + "-"));              // gauge label and value: the tape value glyphs, smaller
         s.add(new Spec("FTapeUnit", big ? 11 : 10, 1.2, "10M"));
         s.add(new Spec("FHdr", hdr, 1.5, AZ + DIG + ">"));
-        s.add(new Spec("FVal", val, def(val), DIG + "-"));
-        s.add(new Spec("FUnit", unit, 1.5, DIG + "%/"));
-        s.add(new Spec("FTabWarn", tab, def(tab), "BINGOSTRE"));
+        s.add(new Spec("FVal", val, def(val), DIG + "-.K"));               // 8.4 (km), 12.3K (steps)
+        s.add(new Spec("FUnit", unit, 1.5, DIG + "%/KMZ"));                // KM, M, Z (UTC)
+        s.add(new Spec("FTabWarn", tab, def(tab), "BINGO"));
         s.add(new Spec("FLunar", lun, big ? 4 : 3, CJK_CHARS));                      // active and always-on
         return s;
     }
 
     /** Advance in grid units: glyph width + 3-unit gap (Latin width scales with K). */
-    static double adv(char c) { return c >= 0x2E80 ? 15 : c == ' ' ? 6 * K : c == '-' ? 6 * K + 3 : c == ':' ? 3 * K + 3 : 8 * K + 3; }
+    static double adv(char c) { return c >= 0x2E80 ? 15 : c == ' ' ? 6 * K : c == '-' ? 6 * K + 3 : c == ':' ? 3 * K + 3 : c == '.' ? 2 * K + 2 : 8 * K + 3; }
 
     /** Advance in whole pixels (same rounding as Stroke.advPx on the watch). */
     static int advPx(char c, double h) { return (int) Math.round(adv(c) * h / 12.0); }
@@ -420,9 +421,9 @@ public class FontGen {
     }
 
     /**
-     * Styles baked into the app, selectable at run time (PcdView.FONT_STYLE, later a setting).
-     * Each style gets its own atlases (<Id>_<tag>.png) and glyph table (Glyphs_<tag>); the lunar
-     * CJK font does not depend on the style and is baked once.
+     * Styles baked into the app, chosen at run time by the phone setting fontStyle (Settings.fontStyle;
+     * only the chosen style is loaded). Each style gets its own atlases (<Id>_<tag>.png) and glyph table
+     * (Glyphs_<tag>); the lunar CJK font does not depend on the style and is baked once.
      */
     static final String[][] STYLES = {
         // tag, style, width k, radius factor
@@ -445,8 +446,8 @@ public class FontGen {
             for (String[] st : STYLES) {
                 STYLE = st[1]; K = Double.parseDouble(st[2]); RMUL = Double.parseDouble(st[3]);
                 StringJoiner json = new StringJoiner(",\n", "{\n", "\n}\n");
-                // Advances in grid units for Stroke on the watch: [Latin, '-', ' ', ':'].
-                json.add("\"_adv\":[" + adv('A') + "," + adv('-') + "," + adv(' ') + "," + adv(':') + "]");
+                // Advances in grid units for Stroke on the watch: [Latin, '-', ' ', ':', '.'].
+                json.add("\"_adv\":[" + adv('A') + "," + adv('-') + "," + adv(' ') + "," + adv(':') + "," + adv('.') + "]");
                 for (Spec sp : specs(big)) {
                     boolean cjk = sp.id().startsWith("FLunar");
                     String file = cjk ? sp.id() : sp.id() + "_" + st[0];

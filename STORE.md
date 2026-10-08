@@ -4,6 +4,8 @@ Text for the store page, plus the submission steps.
 
 **Submitted 2026-10-05** as version 0.1.0 (developer name `PCDCockpit`, category Digital, free, English + 简体中文, source link to GitHub): https://apps.garmin.com/apps/dfd968c1-9d33-4d44-a191-c6de0fa0d4e6 — pending review. Updates go through "Upload New Version" on that page, signed with the same `developer_key`.
 
+The description below is the one for the next upload (0.2.0: phone settings, new fields, font styles; no STRESS warning). The 0.1.0 listing was the same without the customisation line.
+
 The listing avoids "F-35" and other aircraft or maker names: the App Review Guidelines ask developers to be careful with other companies' brand names, and "F-35" is a Lockheed Martin trademark. "Fighter-jet HUD / cockpit display style" says the same thing. The code comments and internal docs are not affected.
 
 ## Submission steps
@@ -58,12 +60,11 @@ WEATHER STATION MODEL
 
 BINGO
 - "Bingo fuel" is the pilot's call for just enough fuel to get home. When the battery reaches 10%, the bottom row turns into a red-striped BINGO warning box: time to charge.
-- On the Venu 3S, a STRESS warning box appears the same way when stress is high.
 
 ALSO ON THE FACE
 - Large 24-hour time, weekday, date and the Chinese lunar date.
-- Data windows: Body Battery, SpO2, weekly intensity minutes and the next sunrise or sunset.
-- Segmented stress gauge in cockpit style on fēnix-size watches, turning amber and red as stress rises.
+- Customisable in the Connect IQ app: the three data windows, the date block, the bottom row and the gauge (over 20 fields, from steps and sleep score to UTC "Zulu" time, visibility and chance of rain), three font styles and progress bars.
+- Segmented gauge in cockpit style on fēnix-size watches: stress by default, turning amber and red as it rises.
 - Tap any element to open the matching page on the watch.
 - Always-on mode shows only the time, date and lunar date in thin strokes, shifted every minute to protect the AMOLED screen.
 
@@ -95,12 +96,11 @@ HUD 刻度带
 
 BINGO
 - "Bingo fuel"是飞行员的术语，意思是剩下的油刚好够返航。电量降到 10% 时，底部一行变成红色斜纹的 BINGO 警告框：该充电了。
-- Venu 3S 上，压力高时也会以同样的方式显示 STRESS 警告框。
 
 表盘上还有
 - 大号 24 小时制时间、星期、日期和农历。
-- 数据窗：身体电量、血氧、本周强度活动分钟，以及下一次日出或日落时间。
-- fēnix 尺寸的表上有座舱风格的分段压力条，压力升高时变成琥珀色和红色。
+- 可在 Connect IQ App 里自定义：三个数据窗、日期右列、底部一行和压力条（20 多项数据，从步数、睡眠分数到 UTC "Zulu" 时间、能见度和降水概率），三种字体风格，以及进度条。
+- fēnix 尺寸的表上有座舱风格的分段条：默认显示压力，升高时变成琥珀色和红色。
 - 点击表盘上的任何元素，都能打开手表上对应的页面。
 - 息屏时只显示细线条的时间、日期和农历，并且每分钟平移一次，防止 AMOLED 烧屏。
 
