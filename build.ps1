@@ -32,6 +32,8 @@ if ($Test) {
     $out = "bin\PcdCockpit-test-$d.prg"
     & "$bin\monkeyc.bat" -f monkey.jungle -d $d -o $out -y $Key -w --unit-test
     if ($LASTEXITCODE -ne 0) { throw "monkeyc (unit tests) failed for $d" }
+    # The simulator keeps the app's settings between runs (.SET, e.g. from a regress.ps1 showcase): start from the defaults.
+    Remove-Item "$env:TEMP\com.garmin.connectiq\GARMIN\APPS\SETTINGS\PCDCOCKPIT-*.SET" -Force -ErrorAction SilentlyContinue
     if (-not (Get-Process simulator -ErrorAction SilentlyContinue)) {
         Start-Process "$bin\simulator.exe"
         Start-Sleep -Seconds 6

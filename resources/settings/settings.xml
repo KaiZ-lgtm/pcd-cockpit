@@ -10,6 +10,12 @@
             <listEntry value="2">@Strings.FontE</listEntry>
         </settingConfig>
     </setting>
+    <setting propertyKey="@Properties.units" title="@Strings.SetUnits">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.UnitsMetric</listEntry>
+            <listEntry value="1">@Strings.UnitsImperial</listEntry>
+        </settingConfig>
+    </setting>
     <setting propertyKey="@Properties.field1" title="@Strings.SetField1">
         <settingConfig type="list">
             <listEntry value="0">@Strings.FieldBB</listEntry>

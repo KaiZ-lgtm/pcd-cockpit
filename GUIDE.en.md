@@ -28,10 +28,10 @@ This is the "station model" from aviation weather charts: a sky-cover circle in 
 | Position | Shows |
 |---|---|
 | Centre circle | Sky cover |
-| Upper left of the circle | Temperature °C (always Celsius, whatever the watch setting) |
-| Lower left of the circle | Dew point °C. The closer it is to the temperature, the more humid the air and the likelier fog |
+| Upper left of the circle | Temperature °C (°F with imperial units, see section 5.2) |
+| Lower left of the circle | Dew point, same unit. The closer it is to the temperature, the more humid the air and the likelier fog |
 | Further left | Current weather symbol |
-| Right of the circle | Sea-level pressure, hPa |
+| Right of the circle | Sea-level pressure, hPa (imperial: inches of mercury, e.g. `29.92`) |
 | Staff from the circle | Wind direction and speed |
 
 ### 1.1 Sky-cover circle
@@ -140,6 +140,7 @@ Modelled on the airspeed and altitude tapes of a fighter HUD, either side of the
 - **Units are tens of metres:** `125` in the box means 1,250 m. The small gray `10M` just above the ALT box, on the side towards the time, is the reminder.
 - A short tick every 20 m, a long tick every 100 m; about ±180 m is visible.
 - Shows at most `999` (9,990 m).
+- **Imperial** (section 5.2): units are hundreds of feet, like a flight level: `41` in the box means 4,100 ft, and the small label above the box reads `100` over `FT`. A short tick every 100 ft, a long tick every 500 ft; about ±900 ft is visible; at most `999` (99,900 ft).
 
 ## 5. Data windows
 
@@ -153,7 +154,7 @@ Each window has a cyan underlined header on top, the white value below and the u
 
 ### 5.1 Choosing what the windows show
 
-In the Connect IQ / Garmin Connect app (face installed from the store): face → Settings. Five places can be changed: the three data windows, the date block's right column (lunar date by default) and the bottom row (sunrise/sunset by default).  The two left data windows are narrow; the right data window, the date block's right column and the bottom row are the wide places. Progress bars can also be turned on: a thin bar under the value for fields with a goal. The font can be switched too: small rounded corners (default), chamfered corners or large rounded corners.
+In the Connect IQ / Garmin Connect app (face installed from the store): face → Settings. Five places can be changed: the three data windows, the date block's right column (lunar date by default) and the bottom row (sunrise/sunset by default).  The two left data windows are narrow; the right data window, the date block's right column and the bottom row are the wide places. Progress bars can also be turned on: a thin bar under the value for fields with a goal. The font can be switched too: small rounded corners (default), chamfered corners or large rounded corners. Units can be metric or imperial (section 5.2).
 
 | Header | Meaning |
 |---|---|
@@ -161,20 +162,35 @@ In the Connect IQ / Garmin Connect app (face installed from the store): face →
 | `RHR>` | Resting heart rate |
 | `SLEEP>` | Sleep score (0–100) |
 | `STEPS>` | Steps today (bar: step goal; wide places only) |
-| `DIST>` | Distance today, km |
+| `DIST>` | Distance today, km (imperial: miles) |
 | `KCAL>` | Calories today, including resting (wide places only) |
 | `FLOORS>` / `FL DN>` | Floors climbed (bar: floor goal) / descended today |
-| `CLIMB>` | Ascent today, metres |
+| `CLIMB>` | Ascent today, metres (imperial: feet) |
 | `ACT DAY>` / `ACT MIN>` | Intensity minutes today / this week (bar: weekly goal; `ACT MIN>` only in the right data window or the date block, where its goal fits) |
 | `VO2>` / `VO2 BIKE>` | VO2 max, running / cycling |
-| `RUN WK>` / `BIKE WK>` | Running / cycling distance this week, km |
+| `RUN WK>` / `BIKE WK>` | Running / cycling distance this week, km (imperial: miles) |
 | `POP>` | Chance of precipitation, % |
-| `VIS>` | Visibility, km |
+| `VIS>` | Visibility, km (imperial: `SM`, statute miles as in aviation) |
 | `SR>` / `SS>` | Next sunrise / sunset (wide places only) |
 | `UTC>` | UTC time with `Z` ("Zulu"), as used in aviation (wide places only) |
 | `BAT>` | Watch battery % |
 
 Where space is short (the two narrow windows, the bottom row) long values are shortened: `23456` steps show as `23.5K` or `23K`, `12.4` km as `12`; long headers too (`STRESS>` → `STR>`, `STEPS>` → `STP>`, `SLEEP>` → `SLP>`, `KCAL>` → `CAL>`, `FLOORS>` → `FLR>`, `FL DN>` → `FLD>`, `CLIMB>` → `CLB>`, `ACT MIN>` → `ACT>`, `ACT DAY>` → `ACTD>`, `VO2 BIKE>` → `VO2B>`, `RUN WK>` → `RUN>`, `BIKE WK>` → `BIKE>`, `UTC>` → `Z>`). `--` means the watch has no value (for example cycling VO2 max without a power meter).
+
+### 5.2 Units
+
+Chosen on the same settings page (the watch's own unit setting is not used):
+
+| | Metric (default) | Imperial |
+|---|---|---|
+| Temperature, dew point | °C | °F |
+| Pressure | hPa (`1013`) | inHg (`29.92`) |
+| Altitude tape | tens of metres (`10M`) | hundreds of feet (`100` over `FT`) |
+| Distance | `KM` | `MI` |
+| Visibility | `KM` | `SM` (statute miles) |
+| Climb | `M` | `FT` |
+
+Wind speed is in knots either way (section 1.2), as in aviation.
 
 ## 6. Bottom: stress gauge, sunrise/sunset and warnings
 

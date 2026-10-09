@@ -3,13 +3,16 @@
 # the reference images in tests\golden\ pixel by pixel.
 #   .\tools\regress.ps1             compare; differing captures and diff images go to tests\out\
 #   .\tools\regress.ps1 -Baseline   (re)write tests\golden\ from the current code
-#   .\tools\regress.ps1 -Show 6,10,15,19,20[,18] [-Bars] [-Wide] [-Font 0|1|2]
+#   .\tools\regress.ps1 -Show 6,10,15,19,20[,18] [-Bars] [-Wide] [-Font 0|1|2] [-Imperial]
 #                                   showcase, no comparison: these Field ids in data windows 1-3, date block,
 #                                   bottom row[, gauge] (resources\settings\properties.xml of the copy); -Wide uses the
-#                                   widest values; captures go to tests\out\show-*.png
+#                                   widest values (weather and altitude too: 43 / -35 °C, 1050 hPa, 8,848 m);
+#                                   -Imperial sets imperial units (alone: the default fields);
+#                                   captures go to tests\out\show-*.png
 # The sources are patched in a copy (tests\work\), never in place. Takes over the simulator; about 4 minutes.
-param([switch]$Baseline, [string[]]$Device = @('fenix847mm', 'venu3s'), [string]$Show, [switch]$Bars, [switch]$Wide, [int]$Font = 1)
+param([switch]$Baseline, [string[]]$Device = @('fenix847mm', 'venu3s'), [string]$Show, [switch]$Bars, [switch]$Wide, [int]$Font = 1, [switch]$Imperial)
 # -Show as one comma-separated string, so it also survives `powershell -File` (which cannot pass arrays).
+if ($Imperial -and -not $Show) { $Show = "0,1,2,-1,3,4" }
 $ShowIds = @(); if ($Show) { $ShowIds = @($Show -split '[,\s]+' | Where-Object { $_ } | ForEach-Object { [int]$_ }) }
 $ErrorActionPreference = 'Continue'
 $root = Split-Path $PSScriptRoot
@@ -85,6 +88,7 @@ if ($Show) {
   for ($i = 0; $i -lt $ShowIds.Count; $i++) { $props = [regex]::Replace($props, "(id=`"$($keys[$i])`" type=`"number`">)-?\d+", "`${1}$($ShowIds[$i])") }
   $props = [regex]::Replace($props, "(id=`"fontStyle`" type=`"number`">)\d", "`${1}$Font")
   $props = $props.Replace('id="showBars" type="boolean">false', "id=`"showBars`" type=`"boolean`">$(if ($Bars) { 'true' } else { 'false' })")
+  $props = [regex]::Replace($props, "(id=`"units`" type=`"number`">)\d", "`${1}$(if ($Imperial) { 1 } else { 0 })")
   [IO.File]::WriteAllText("$work\resources\settings\properties.xml", $props, $enc)
 }
 
@@ -98,6 +102,7 @@ try {
            "        hr = 128; altitude = 1250.0; bodyBattery = 74; spo2 = 97; actMin = 95; actGoal = 150;`n" +
            "        battery = $bat; stress = $str; sunIsSet = true; sunTime = `"1856`";`n" +
            $(if ($Wide) {
+           "        wxTemp = 43.0; wxDew = -35.0; wxPressure = 105000.0; altitude = 8848.0;`n" +
            "        steps = 23456; stepGoal = 10000; floors = 128; floorsGoal = 10; floorsDn = 99; kcal = 3456;`n" +
            "        distM = 123400.0; actDay = 240; climbM = 2345.0; vo2Run = 65; vo2Bike = 52; runWkM = 112300.0;`n" +
            "        bikeWkM = 312000.0; rhr = 104; sleepScore = 100; visM = 50000.0; pop = 100; utcTime = `"2359`";`n"

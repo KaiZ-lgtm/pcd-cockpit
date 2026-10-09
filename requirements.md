@@ -26,8 +26,8 @@ Not supported: the fēnix 7 family (MIP screens, 240–280 px; would need its ow
 
 - AMOLED only (no Solar/MIP build). Min API 5.1 (needed for weather cloud cover, dew point, pressure, visibility).
 - Both screens are ~12.8 px/mm, so a given pixel size is the same physical size on both.
-- 24-hour time, no seconds. Phone settings (store installs): what each slot shows and the progress bars ([SETTINGS.md](SETTINGS.md)); the other options below are compile-time constants.
-- Temperature always in °C, regardless of the watch's unit setting.
+- 24-hour time, no seconds. Phone settings (store installs): font, units, what each slot shows and the progress bars ([SETTINGS.md](SETTINGS.md)); the other options below are compile-time constants.
+- Units: a phone setting, not the watch's unit setting. Metric (default): temperature °C, pressure hPa, altitude and climb m, distance and visibility km. Imperial: °F, inHg (`29.92`), altitude tape in hundreds of feet (`100` over `FT`), climb ft, distance mi, visibility SM. Wind is in knots either way (barbs only).
 
 ## 2. Visual style
 
@@ -35,7 +35,7 @@ Not supported: the fēnix 7 family (MIP screens, 240–280 px; would need its ow
 - Background: true black. Thin gray (#5A5A5A) divider lines instead of boxed windows.
 - Palette: HUD green #33FF66 (time, tapes) · white #FFFFFF (values, date, weather) · cyan #33E0FF (labels, underlined headers with ">" soft-key arrows) · amber #FFC21A (caution) · red #FF3030 (warning) · gray #8A8A8A (units) · light gray #A0A0A0 (wind barb).
 - Font: all Latin letters, digits and symbols drawn as single-line vector strokes (custom glyph set on an 8 × 12 grid, monospaced), shaped after the F-35 PCD font: slashed zero (letter O stays plain), 3 / 8 / S / B with a smaller top bowl, shallow M middle, W with near-vertical legs and a low middle peak, A with a flat top and straight legs, condensed to 0.85 of the mockup width. Three corner styles are built in, chosen by `FONT_STYLE` (later a setting): D = 45° chamfers, G = small rounded corners (default), E = large rounded corners. Baked from these vector paths into anti-aliased glyph atlases (round caps and joins, whole-pixel stroke widths, stems snapped to the pixel grid). The Chinese lunar date uses the same single-line vector stroke style (HUD symbology), 17 custom glyphs on a 12 × 12 grid: 一二三四五六七八九十正冬腊月初廿闰.
-- Text sizes: every number is at least 16 px tall (~1.25 mm) and main values 18 px or more; the only smaller text is the tape labels (HR / ALT, 11 px) and `10M` (11 / 10 px). The tapes have no scale numbers.
+- Text sizes: every number is at least 16 px tall (~1.25 mm) and main values 18 px or more; the only smaller text is the tape labels (HR / ALT, 11 px) and `10M` / `100` over `FT` (11 / 10 px). The tapes have no scale numbers.
 
 ## 3. Layout (top to bottom)
 
@@ -46,7 +46,7 @@ Coordinates are pixels relative to the screen centre, x right and y down; where 
    - A clear zone of radius `clear` (46 / 38) is reserved around the circle for the wind barb (staff 25 / 20 px beyond the circle).
    - Temperature (upper-left) and dew point (lower-left), right-aligned at x = −clear. The dew point baseline sits 10 px above the weekday (y −144 / −126).
    - Present-weather symbol 22 / 18 px left of the temperatures and 10 / 8 px below the circle centre (level with the circle, a tall symbol such as the thunderstorm clipped on the bezel), scaled 1.6× on the fēnix and 1.35× on the Venu with 2.3 px strokes.
-   - Pressure in whole hPa (`1013`, `998`, as in METAR's `Q1013`; not the station model's coded `132`, which is harder to read) upper-right at x = +clear.
+   - Pressure in whole hPa (`1013`, `998`, as in METAR's `Q1013`; not the station model's coded `132`, which is harder to read) upper-right at x = +clear. Imperial: inHg with two decimals (`29.92`, as the US altimeter setting `A2992`).
    - Numbers are 25 px on the fēnix and 21 px on the Venu.
    - Checked in the simulator at the widest cases (`-12` / `-18`, thunderstorm and freezing-rain symbols, 65 kt barbs up, left, right and down-left, 4-digit pressure): nothing touches the bezel or the date block.
    - Wind barb in knots from `windBearing` + `windSpeed` (m/s → kt): half barb 5 kt, full 10 kt, pennant 50 kt. Calm (< 3 kt) is an outer ring, also when no bearing is given. No wind speed (or a wind ≥ 3 kt with no bearing): nothing is drawn.
@@ -61,7 +61,7 @@ Coordinates are pixels relative to the screen centre, x right and y down; where 
    - Value box against the bezel, centred on the middle row: outer edge x ±216 (fēnix) / ±184 (Venu); fēnix 60 × 50 with 20 px value, Venu 58 × 46 with 18 px value (room for 3 digits), 3 px border (1 px inside the box edge, 2 px outside); the value stroke is 1 px wider than the mockup default (3 px). `10M` sits 5 px above the box top. The label (HR / ALT, 11 px) is inside the box above the value. No pointer: the box centre marks the current value.
    - Spine: a vertical 2 px line at x ±184 / ±156 that runs behind the box (the box's black fill covers the middle) up and down to the bezel, where the round display cuts it off (visible about ±133 / ±117 px from the centre), past the date block and beside the data row. Ticks point outward from the spine towards the bezel (fēnix major 12 px, minor 7 px; Venu 10 / 6), one every 22 / 19 px on the heart-rate tape and every 15 / 13 px on the altitude tape; ticks and zone bands are snapped to whole pixels (major ticks 3 px thick, minor 2 px), so every tick of a kind has the same weight and the tape scrolls in 1 px steps.
    - **Left: heart rate.** Scrolling, about ±30 bpm visible (4.4 / 3.8 px per bpm), tick every 5 bpm (major every 10). Zone colour band (4 px) along the inner side of the spine, where zones are in view: Z1 gray, Z2 cyan, Z3 green, Z4 amber, Z5 red. The box outline and value turn to the current zone colour. Zones come from `UserProfile.getHeartRateZones()`.
-   - **Right: altitude in tens of metres.** 1,250 m shows as `125`, with a small gray `10M` (11/10 px) directly above the ALT box, starting 1 px inside the box's inner edge (clear of the spine and the time). Always metres. About ±180 m visible, tick every 20 m (major every 100 m). Clamp at `999`.
+   - **Right: altitude in tens of metres.** 1,250 m shows as `125`, with a small gray `10M` (11/10 px) directly above the ALT box, starting 1 px inside the box's inner edge (clear of the spine and the time). About ±180 m visible, tick every 20 m (major every 100 m). Clamp at `999`. Imperial: hundreds of feet (4,100 ft shows as `41`, like a flight level) with `100` over `FT` above the box (one line would cross the spine), tick every 100 ft (major every 500 ft), the same px per tick (about ±900 ft visible).
 5. **Slots** — every place that shows one data field (`Slot` in `Slots.mc`, listed per device in `Layout.slots`; the field definitions are in `Fields.mc`). Drawing and tap targets both come from this one list. Four styles:
 
    | Style | Look | Width (fēnix / Venu) | Used by |
