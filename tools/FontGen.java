@@ -148,16 +148,16 @@ public class FontGen {
                val = big ? 34 : 29, unit = 16, tab = tapeV, lun = big ? 36 : 29, date = big ? 30 : 25;
         s.add(new Spec("FTime", timeH, big ? 6 : 5, DIG));               // about the old weight ratio (106 / 7, 86 / 6)
         s.add(new Spec("FTimeAod", timeH, 2.5, DIG));                    // always-on: thin but readable
-        s.add(new Spec("FText", textH, def(textH), DIG + "-"));           // station model numbers
+        s.add(new Spec("FText", textH, def(textH), DIG + "-."));          // station model numbers (29.92 inHg)
         s.add(new Spec("FDate", date, 3, AZ + DIG + "/"));               // weight of the earlier 32 / 27 px date
         s.add(new Spec("FDateAod", date, 2, AZ + DIG + "/"));
         s.add(new Spec("FTapeVal", tapeV, def(tapeV) + 1, DIG + "-"));   // 1 px heavier than the default
         s.add(new Spec("FTapeLbl", 11, 1.3, "HRALT"));
         s.add(new Spec("FGaugeVal", 14, 2, AZ + DIG + "-"));              // gauge label and value: the tape value glyphs, smaller
-        s.add(new Spec("FTapeUnit", big ? 11 : 10, 1.2, "10M"));
+        s.add(new Spec("FTapeUnit", big ? 11 : 10, 1.2, "10MFT"));       // 10M; imperial 100 over FT
         s.add(new Spec("FHdr", hdr, 1.5, AZ + DIG + ">"));
         s.add(new Spec("FVal", val, def(val), DIG + "-.K"));               // 8.4 (km), 12.3K (steps)
-        s.add(new Spec("FUnit", unit, 1.5, DIG + "%/KMZ"));                // KM, M, Z (UTC)
+        s.add(new Spec("FUnit", unit, 1.5, DIG + "%/KMZFTIS"));            // KM, M, Z (UTC); imperial FT, MI, SM
         s.add(new Spec("FTabWarn", tab, def(tab), "BINGO"));
         s.add(new Spec("FLunar", lun, big ? 4 : 3, CJK_CHARS));                      // active and always-on
         return s;

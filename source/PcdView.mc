@@ -216,8 +216,8 @@ class PcdView extends WatchUi.WatchFace {
         }
         Wx.drawSky(dc, x, y, r, d.wxCover, fg);
 
-        var tStr = tempStr(d.wxTemp);
-        var dStr = tempStr(d.wxDew);
+        var tStr = Units.temp(d.wxTemp, Settings.imperial);
+        var dStr = Units.temp(d.wxDew, Settings.imperial);
         var tr = x - L.clear;
         Stroke.draw(dc, tStr, tr, y - 5, h, tStr.equals("--") ? Col.UNIT : fg, Stroke.END, _fText as StrokeFont);
         Stroke.draw(dc, dStr, tr, y + 5 + h, h, dStr.equals("--") ? Col.UNIT : fg, Stroke.END, _fText as StrokeFont);
@@ -230,15 +230,11 @@ class PcdView extends WatchUi.WatchFace {
         // symDy px below the circle centre: level with the upper corner, a tall symbol clips on the bezel.
         Wx.drawSymbol(dc, sym, tr - tw - L.symGap, y + L.symDy, L.symK, symCol);
 
-        // Pressure in whole hPa, 3 or 4 digits (as METAR's Q1013, not the station model's coded 132: easier to read).
+        // Pressure in whole hPa, 3 or 4 digits (as METAR's Q1013, not the station model's coded 132: easier
+        // to read), or inHg as 29.92.
         var p = d.wxPressure;
-        var pStr = p != null ? (p / 100.0 + 0.5).toNumber().toString() : "--";
+        var pStr = Units.pressure(p, Settings.imperial);
         Stroke.draw(dc, pStr, x + L.clear, y + h / 2, h, p != null ? fg : Col.UNIT, Stroke.START, _fText as StrokeFont);
-    }
-
-    private function tempStr(c as Numeric?) as String {
-        if (c == null) { return "--"; }
-        return Math.round(c.toFloat()).toNumber().toString();   // always °C
     }
 
     // ---- Tapes --------------------------------------------------------------------------
@@ -247,15 +243,10 @@ class PcdView extends WatchUi.WatchFace {
         var hr = data.hr;
         // HR: tick 5 bpm every L.hrTickPx px, long tick 10 bpm (about ±30 bpm visible).
         drawTape(dc, L, -1, hr != null ? hr.toFloat() : null, 5, 10, L.hrTickPx, "HR", data.zones, null);
-        var alt = data.altitude;
-        var altTens = null;
-        if (alt != null) {
-            altTens = alt / 10.0;
-            if (altTens > 999) { altTens = 999.0; }
-            if (altTens < -99) { altTens = -99.0; }
-        }
-        // ALT in tens of metres: tick 20 m every L.tickPx px, long tick 100 m.
-        drawTape(dc, L, 1, altTens, 2, 10, L.tickPx, "ALT", null, "10M");
+        // ALT in tens of metres (tick 20 m, long tick 100 m) or hundreds of feet (tick 100 ft, long tick
+        // 500 ft), one tick every L.tickPx px.
+        var a = Units.altTape(data.altitude, Settings.imperial);
+        drawTape(dc, L, 1, a[0] as Float?, a[1] as Number, a[2] as Number, L.tickPx, "ALT", null, a[3] as String);
     }
 
     private function zoneColor(v as Numeric, z as Array<Number>?) as Number {
@@ -345,8 +336,14 @@ class PcdView extends WatchUi.WatchFace {
             Stroke.draw(dc, "--", mid, by + bh - 7, L.boxV, Col.UNIT, Stroke.MIDDLE, fv);
         }
         if (unit != null) {
-            // Above the box, starting 1 px inside its inner edge: clear of the spine and of the time.
-            Stroke.draw(dc, unit, bi - side, by - 5, L.tapeUnitH, Col.UNIT, side > 0 ? Stroke.START : Stroke.END, _fTapeUnit as StrokeFont);
+            // Above the box, starting 1 px inside its inner edge: clear of the spine and of the time. Two
+            // words stack, the last one lowest ("100" over "FT": "100FT" in one line would cross the spine).
+            var sp = unit.find(" ");
+            var lines = sp == null ? [unit] : [unit.substring(sp + 1, unit.length()), unit.substring(0, sp)];
+            for (var i = 0; i < lines.size(); i++) {
+                Stroke.draw(dc, lines[i] as String, bi - side, by - 5 - i * (L.tapeUnitH + 3), L.tapeUnitH, Col.UNIT,
+                            side > 0 ? Stroke.START : Stroke.END, _fTapeUnit as StrokeFont);
+            }
         }
     }
 

@@ -4,7 +4,7 @@ Text for the store page, plus the submission steps.
 
 **Submitted 2026-10-05** as version 0.1.0 (developer name `PCDCockpit`, category Digital, free, English + 简体中文, source link to GitHub): https://apps.garmin.com/apps/dfd968c1-9d33-4d44-a191-c6de0fa0d4e6 — pending review. Updates go through "Upload New Version" on that page, signed with the same `developer_key`.
 
-The description below is the one for the next upload (0.2.0: phone settings, new fields, font styles; no STRESS warning). The 0.1.0 listing was the same without the customisation line.
+The description below is the one for the next upload (0.2.0: phone settings, new fields, font styles, imperial units; no STRESS warning). The 0.1.0 listing was the same without the customisation line.
 
 The listing avoids "F-35" and other aircraft or maker names: the App Review Guidelines ask developers to be careful with other companies' brand names, and "F-35" is a Lockheed Martin trademark. "Fighter-jet HUD / cockpit display style" says the same thing. The code comments and internal docs are not affected.
 
@@ -56,7 +56,7 @@ HUD TAPES
 WEATHER STATION MODEL
 - The top of the face is a station model, the symbol pilots and forecasters read on surface weather charts.
 - Sky-cover circle from clear to overcast, temperature and dew point, sea-level pressure in hPa, and present-weather symbols (rain, snow, showers, thunderstorm, fog and more).
-- Wind barb: the staff points to where the wind blows from; a half barb is 5 knots, a full barb 10 knots, a pennant 50 knots. Calm wind draws a ring around the circle.
+- Wind barb: the staff points to where the wind blows from; a half barb is 5 knots, a full barb 10 knots, a pennant 50 knots (1 knot ≈ 1.85 km/h, so a full barb is about 19 km/h). Calm wind draws a ring around the circle.
 
 BINGO
 - "Bingo fuel" is the pilot's call for just enough fuel to get home. When the battery reaches 10%, the bottom row turns into a red-striped BINGO warning box: time to charge.
@@ -68,7 +68,7 @@ ALSO ON THE FACE
 - Tap any element to open the matching page on the watch.
 - Always-on mode shows only the time, date and lunar date in thin strokes, shifted every minute to protect the AMOLED screen.
 
-Units are fixed: °C, hPa, knots and metres.
+Units: metric (°C, hPa, metres, km) or imperial (°F, inHg, feet, miles), chosen in the face's settings. Wind is always in knots, as in aviation (shown only as barbs, never as a number).
 
 Supported: fēnix 8 and fēnix 8 Pro 47 / 51 mm (also tactix 8 and quatix 8), epix Pro (Gen 2) 51 mm, Forerunner 965 / 970, Venu 3, Venu 3S, Venu 4 45 mm. AMOLED only.
 
@@ -92,7 +92,7 @@ HUD 刻度带
 航空天气站点模型
 - 表盘顶部是"站点模型"，就是飞行员和预报员在地面天气图上看的那种符号。
 - 云量圆（从晴到阴天）、气温和露点、海平面气压（百帕），以及天气现象符号（雨、雪、阵雨、雷暴、雾等）。
-- 风羽：杆指向风吹来的方向；短羽 5 节，长羽 10 节，三角旗 50 节。无风时在云量圆外多画一圈。
+- 风羽：杆指向风吹来的方向；短羽 5 节，长羽 10 节，三角旗 50 节（1 节 ≈ 1.85 公里/小时，一根长羽约 19 公里/小时）。无风时在云量圆外多画一圈。
 
 BINGO
 - "Bingo fuel"是飞行员的术语，意思是剩下的油刚好够返航。电量降到 10% 时，底部一行变成红色斜纹的 BINGO 警告框：该充电了。
@@ -104,7 +104,7 @@ BINGO
 - 点击表盘上的任何元素，都能打开手表上对应的页面。
 - 息屏时只显示细线条的时间、日期和农历，并且每分钟平移一次，防止 AMOLED 烧屏。
 
-单位固定：摄氏度、百帕、节、米。
+单位可在表盘设置里选：公制（摄氏度、百帕、米、公里）或英制（华氏度、英寸汞柱、英尺、英里）。风速始终按航空习惯用节（只用风羽表示，不显示数字）。
 
 支持：fēnix 8 和 fēnix 8 Pro 47 / 51 mm（含 tactix 8、quatix 8）、epix Pro（第二代）51 mm、Forerunner 965 / 970、Venu 3、Venu 3S、Venu 4 45 mm，仅限 AMOLED 屏幕。
 

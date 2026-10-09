@@ -1,4 +1,5 @@
 import Toybox.Lang;
+import Toybox.Math;
 import Toybox.Test;
 
 // Unit tests (.\build.ps1 -Test). Compiled only with --unit-test, never into the watch builds.
@@ -75,11 +76,11 @@ function testFieldFormats(logger as Logger) as Boolean {
     ok = ok && sameStrings(Field.kilo(9876), ["9.9K", "10K"]);
     ok = ok && sameStrings(Field.kilo(23456), ["23.5K", "23K"]);
     // Distances: one decimal under 100 km, shorter form whole km.
-    var k = Field.km(8420.0);
+    var k = Units.dist(8420.0, false, false);
     ok = ok && "8.4".equals(k[0]) && "KM".equals(k[1]) && sameStrings(k[3] as Array<String>?, ["8"]);
-    k = Field.km(123400.0);
+    k = Units.dist(123400.0, false, false);
     ok = ok && "123".equals(k[0]) && k[3] == null;
-    ok = ok && Field.km(null)[0] == null;
+    ok = ok && Units.dist(null, false, false)[0] == null;
     // Steps value, goal progress and shorter forms.
     var d = new Data();
     d.steps = 12345; d.stepGoal = 10000;
@@ -96,49 +97,60 @@ function testFieldFormats(logger as Logger) as Boolean {
     return ok;
 }
 
-// The widest values each field can show (as the demo build's odd steps).
-function widestData() as Data {
+// The widest values each field can show (as the demo build's odd steps). Distances just under 100 km or
+// 100 mi (one decimal), 1,000 a week by bike.
+function widestData(imp as Boolean) as Data {
     var d = new Data();
     d.bodyBattery = 100; d.spo2 = 100; d.stress = 100; d.actMin = 999; d.actGoal = 150; d.battery = 100.0;
     d.sunIsSet = true; d.sunTime = "2359";
     // Steps from 99,500 would shorten to 100K, too wide for a narrow cell: not a real day.
     d.steps = 99499; d.stepGoal = 10000; d.floors = 999; d.floorsGoal = 10; d.floorsDn = 999; d.kcal = 9999;
-    d.distM = 99940.0; d.actDay = 999; d.climbM = 9999.0; d.vo2Run = 99; d.vo2Bike = 99;
-    d.runWkM = 99940.0; d.bikeWkM = 999400.0; d.rhr = 199; d.sleepScore = 100; d.visM = 99940.0; d.pop = 100;
+    var u = imp ? Units.M_PER_MI : 1000.0;
+    d.distM = 99.94 * u; d.actDay = 999; d.climbM = 9999.0; d.vo2Run = 99; d.vo2Bike = 99;
+    d.runWkM = 99.94 * u; d.bikeWkM = 999.4 * u; d.rhr = 199; d.sleepScore = 100; d.visM = 99.94 * u; d.pop = 100;
     d.utcTime = "2359";
     return d;
 }
 
-// Every field fits every slot it is allowed in, on both layouts, with its widest value: cell header within
-// w - 10, value + unit within w - 12; bottom row within Layout.rowW. Uses the condensed G advances.
+// Every field fits every slot it is allowed in, on both layouts and in both unit systems, with its widest
+// value: cell header within w - 10, value + unit within w - 12; bottom row within Layout.rowW. Uses the
+// condensed G advances.
 (:test)
 function testEveryFieldFits(logger as Logger) as Boolean {
     Stroke.setAdvances([9.8, 8.1, 5.1, 5.55, 3.7]);
-    var d = widestData();
     var ok = true;
     var lays = [new Layout(454), new Layout(390)];
-    for (var li = 0; li < lays.size(); li++) {
-        var L = lays[li];
-        for (var id = 0; id < Field.COUNT; id++) {
-            var r = Field.read(id, d);
-            var hdr = Field.header(id, d);
-            var cells = Field.wide(id) ? [L.winW] : [L.winN, L.winW];
-            for (var c = 0; c < cells.size(); c++) {
-                var w = cells[c];
-                var f = Fit.cell(id, hdr, r[0] as String?, r[1] as String, r[3] as Array<String>?, w, L);
-                var hw = Stroke.width(f[0] as String, L.hdrH);
-                var vw = Stroke.width(f[1] as String, L.valH) + Fit.unitWidth(f[2] as String, L);
-                if (hw > w - 10 || vw > w - 12) {
-                    logger.error("field " + id + " in a " + w + " px cell: " + f[0] + " " + f[1] + f[2] + " (" + hw + " / " + vw + " px)");
-                    ok = false;
-                }
-            }
-            var f = Fit.row(id, hdr, r[0] as String?, r[1] as String, r[3] as Array<String>?, L);
-            var rw = Fit.rowWidth(f, L);
-            if (rw > L.rowW) {
-                logger.error("field " + id + " in the bottom row (" + L.rowW + " px): " + f[0] + " " + f[1] + f[2] + " (" + rw + " px)");
+    for (var u = 0; u < 2; u++) {
+        Settings.imperial = u == 1;
+        var d = widestData(Settings.imperial);
+        for (var li = 0; li < lays.size(); li++) { ok = fieldsFit(logger, lays[li], d) && ok; }
+    }
+    Settings.imperial = false;
+    return ok;
+}
+
+function fieldsFit(logger as Logger, L as Layout, d as Data) as Boolean {
+    var ok = true;
+    var tag = Settings.imperial ? " (imperial)" : "";
+    for (var id = 0; id < Field.COUNT; id++) {
+        var r = Field.read(id, d);
+        var hdr = Field.header(id, d);
+        var cells = Field.wide(id) ? [L.winW] : [L.winN, L.winW];
+        for (var c = 0; c < cells.size(); c++) {
+            var w = cells[c];
+            var f = Fit.cell(id, hdr, r[0] as String?, r[1] as String, r[3] as Array<String>?, w, L);
+            var hw = Stroke.width(f[0] as String, L.hdrH);
+            var vw = Stroke.width(f[1] as String, L.valH) + Fit.unitWidth(f[2] as String, L);
+            if (hw > w - 10 || vw > w - 12) {
+                logger.error("field " + id + tag + " in a " + w + " px cell: " + f[0] + " " + f[1] + f[2] + " (" + hw + " / " + vw + " px)");
                 ok = false;
             }
+        }
+        var f = Fit.row(id, hdr, r[0] as String?, r[1] as String, r[3] as Array<String>?, L);
+        var rw = Fit.rowWidth(f, L);
+        if (rw > L.rowW) {
+            logger.error("field " + id + tag + " in the bottom row (" + L.rowW + " px): " + f[0] + " " + f[1] + f[2] + " (" + rw + " px)");
+            ok = false;
         }
     }
     return ok;
@@ -162,6 +174,7 @@ function testDefaultRowUnchanged(logger as Logger) as Boolean {
 (:test)
 function testLayoutDefaultSlots(logger as Logger) as Boolean {
     var ok = true;
+    Settings.fields = Settings.DEFAULTS;   // not whatever the simulator's saved settings loaded
     var big = new Layout(454);
     var sm = new Layout(390);
     // fēnix: bottom row, gauge, three data windows, date block.
@@ -204,7 +217,7 @@ function testLunarDates(logger as Logger) as Boolean {
 // a value with the widest data; % of a goal may pass 100.
 (:test)
 function testGaugeFields(logger as Logger) as Boolean {
-    var d = widestData();
+    var d = widestData(false);
     var ok = true;
     for (var id = 0; id < Field.COUNT; id++) {
         if (!Field.gaugeable(id)) { continue; }
@@ -228,6 +241,45 @@ function testFieldTables(logger as Logger) as Boolean {
     }
     // Spot checks against the order of the enum.
     ok = ok && "KCAL>".equals(Field.HEADERS[Field.KCAL]) && "Z>".equals(Field.SHORTS[Field.UTC]) && Field.TAPS[Field.UTC] == null;
+    return ok;
+}
+
+// Units setting: metric unless the stored value is 1; every drawn unit converts, wind does not (knots).
+(:test)
+function testUnits(logger as Logger) as Boolean {
+    var ok = !Settings.pickImperial(null) && !Settings.pickImperial(0) && Settings.pickImperial(1)
+        && !Settings.pickImperial(2) && !Settings.pickImperial("1") && !Settings.pickImperial(true);
+    // Station model: whole degrees, pressure 1013 hPa / 29.92 inHg.
+    ok = ok && "18".equals(Units.temp(18.0, false)) && "64".equals(Units.temp(18.0, true));
+    ok = ok && "-12".equals(Units.temp(-12.0, false)) && "10".equals(Units.temp(-12.0, true));
+    ok = ok && "-40".equals(Units.temp(-40.0, true)) && "--".equals(Units.temp(null, true));
+    ok = ok && "1013".equals(Units.pressure(101325.0, false)) && "29.92".equals(Units.pressure(101325.0, true));
+    ok = ok && "--".equals(Units.pressure(null, true));
+    // Altitude tape: tens of metres (125 = 1,250 m) or hundreds of feet (41 = 4,100 ft), clamped.
+    var a = Units.altTape(1250.0, false);
+    ok = ok && (a[0] as Float) == 125.0 && a[1] == 2 && a[2] == 10 && "10M".equals(a[3]);
+    a = Units.altTape(1250.0, true);
+    ok = ok && Math.round(a[0] as Float).toNumber() == 41 && a[1] == 1 && a[2] == 5 && "100 FT".equals(a[3]);
+    ok = ok && (Units.altTape(99999.0, true)[0] as Float) == 999.0 && Units.altTape(null, true)[0] == null;
+    // Distances in miles, visibility in statute miles, climb in feet.
+    var k = Units.dist(8420.0, true, false);
+    ok = ok && "5.2".equals(k[0]) && "MI".equals(k[1]) && sameStrings(k[3] as Array<String>?, ["5"]);
+    k = Units.dist(16093.44, true, true);
+    ok = ok && "10.0".equals(k[0]) && "SM".equals(k[1]);
+    ok = ok && "MI".equals(Units.dist(null, true, false)[1]);
+    var c = Units.climb(312.0, true);
+    ok = ok && c[0] == 1024 && "FT".equals(c[1]) && Units.climb(312.0, false)[0] == 312;
+    // Through Field.read with the setting on.
+    var d = new Data();
+    d.climbM = 312.0; d.visM = 4800.0;
+    Settings.imperial = true;
+    var r = Field.read(Field.CLIMB, d);
+    ok = ok && "1024".equals(r[0]) && "FT".equals(r[1]);
+    r = Field.read(Field.VIS, d);
+    ok = ok && "3.0".equals(r[0]) && "SM".equals(r[1]);
+    Settings.imperial = false;
+    r = Field.read(Field.CLIMB, d);
+    ok = ok && "312".equals(r[0]) && "M".equals(r[1]);
     return ok;
 }
 

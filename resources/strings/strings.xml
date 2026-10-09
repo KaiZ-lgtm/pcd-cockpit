@@ -3,6 +3,7 @@
 
     <!-- Phone settings: titles -->
     <string id="SetFont">Font</string>
+    <string id="SetUnits">Units (wind is always in knots)</string>
     <string id="SetField1">Data window 1 (left)</string>
     <string id="SetField2">Data window 2 (middle)</string>
     <string id="SetField3">Data window 3 (right, wide)</string>
@@ -23,17 +24,17 @@
     <string id="FieldFloors">FLOORS - Floors climbed today</string>
     <string id="FieldFloorsDn">FL DN - Floors descended today</string>
     <string id="FieldKcal">KCAL - Calories today (wide slots only)</string>
-    <string id="FieldDist">DIST - Distance today (km)</string>
+    <string id="FieldDist">DIST - Distance today (km or mi)</string>
     <string id="FieldActDay">ACT DAY - Intensity minutes today</string>
-    <string id="FieldClimb">CLIMB - Ascent today (m)</string>
+    <string id="FieldClimb">CLIMB - Ascent today (m or ft)</string>
     <string id="FieldVo2Run">VO2 - VO2 max, running</string>
     <string id="FieldVo2Bike">VO2 BIKE - VO2 max, cycling</string>
-    <string id="FieldRunWk">RUN WK - Running distance this week (km)</string>
-    <string id="FieldBikeWk">BIKE WK - Cycling distance this week (km)</string>
+    <string id="FieldRunWk">RUN WK - Running distance this week (km or mi)</string>
+    <string id="FieldBikeWk">BIKE WK - Cycling distance this week (km or mi)</string>
     <string id="FieldRhr">RHR - Resting heart rate</string>
     <string id="FieldSleep">SLEEP - Sleep score</string>
     <string id="FieldUtc">UTC - Zulu time (wide slots only)</string>
-    <string id="FieldVis">VIS - Visibility (km)</string>
+    <string id="FieldVis">VIS - Visibility (km or statute miles)</string>
     <string id="FieldPop">POP - Chance of precipitation</string>
 
     <!-- Phone settings: gauge choices (label on the face) -->
@@ -50,4 +51,8 @@
     <string id="FontG">Small rounded corners</string>
     <string id="FontD">Chamfered corners</string>
     <string id="FontE">Large rounded corners</string>
+
+    <!-- Phone settings: units -->
+    <string id="UnitsMetric">Metric: °C, hPa, m, km</string>
+    <string id="UnitsImperial">Imperial: °F, inHg, ft, mi</string>
 </strings>

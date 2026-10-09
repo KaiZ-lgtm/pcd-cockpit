@@ -1,7 +1,7 @@
 import Toybox.Application;
 import Toybox.Lang;
 
-// Phone settings (resources/settings/, SETTINGS.md): what each slot shows and the progress bars. The
+// Phone settings (resources/settings/, SETTINGS.md): what each slot shows, the progress bars, font and units. The
 // values are Field ids stored in the wearer's settings, so Field enum values must never be renumbered.
 // Anything missing, of the wrong type or not allowed in its slot falls back to the default, which is
 // the look of the build before settings existed.
@@ -16,6 +16,9 @@ module Settings {
     var showBars as Boolean = false;
     // Font style: 0 = D chamfered, 1 = G small rounded (default), 2 = E large rounded (PcdView.fontIds).
     var fontStyle as Number = 1;
+    // Units: false = metric (default: °C, hPa, m, km), true = imperial (°F, inHg, ft, mi; visibility in
+    // statute miles). Wind is in knots either way (barbs).
+    var imperial as Boolean = false;
 
     function load() as Void {
         var f = [] as Array<Number>;
@@ -24,6 +27,12 @@ module Settings {
         var b = read("showBars");
         showBars = b instanceof Boolean ? b : false;
         fontStyle = pickStyle(read("fontStyle"));
+        imperial = pickImperial(read("units"));
+    }
+
+    // units: 1 = imperial; anything else (0, missing, wrong type) = metric.
+    function pickImperial(v as PropertyValueType?) as Boolean {
+        return v instanceof Number && v == 1;
     }
 
     function pickStyle(v as PropertyValueType?) as Number {

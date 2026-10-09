@@ -100,20 +100,20 @@ module Field {
             case KCAL:
                 return [str(d.kcal), "", null, kilo(d.kcal)];
             case DIST:
-                return km(d.distM);
+                return Units.dist(d.distM, Settings.imperial, false);
             case ACT_DAY:
                 return [str(d.actDay), "", null, null];
             case CLIMB:
-                var c = d.climbM != null ? (d.climbM + 0.5).toNumber() : null;
-                return [str(c), "M", null, kilo(c)];
+                var c = Units.climb(d.climbM, Settings.imperial);
+                return [str(c[0] as Number?), c[1], null, kilo(c[0] as Number?)];
             case VO2_RUN:
                 return [str(d.vo2Run), "", null, null];
             case VO2_BIKE:
                 return [str(d.vo2Bike), "", null, null];
             case RUN_WK:
-                return km(d.runWkM);
+                return Units.dist(d.runWkM, Settings.imperial, false);
             case BIKE_WK:
-                return km(d.bikeWkM);
+                return Units.dist(d.bikeWkM, Settings.imperial, false);
             case RHR:
                 return [str(d.rhr), "", null, null];
             case SLEEP:
@@ -121,7 +121,7 @@ module Field {
             case UTC:
                 return [d.utcTime, "Z", null, null];
             case VIS:
-                return km(d.visM);
+                return Units.dist(d.visM, Settings.imperial, true);
             case POP:
                 return [str(d.pop), "%", null, null];
         }
@@ -140,15 +140,6 @@ module Field {
     function kilo(n as Number?) as Array<String>? {
         if (n == null || n < 1000) { return null; }
         return [(n / 1000.0).format("%.1f") + "K", ((n + 500) / 1000).toString() + "K"];
-    }
-
-    // Metres as km: one decimal under 100 km ("8.4", shorter form "8"), whole km from 100 up.
-    function km(m as Float?) as Array {
-        if (m == null) { return [null, "KM", null, null]; }
-        var k = m / 1000.0;
-        var whole = (k + 0.5).toNumber().toString();
-        if (k < 99.95) { return [k.format("%.1f"), "KM", null, [whole]]; }
-        return [whole, "KM", null, null];
     }
 
     // GAUGE slots: [label, value 0..100 or null, colour]. Only fields with a 0..100 scale have a case; any

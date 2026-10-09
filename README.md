@@ -47,7 +47,7 @@ It bakes every style in `STYLES` into its own atlases (`<Font>_<tag>.png`) and g
 
 ## Options
 
-Phone settings (store installs only): the font style, what each of the five slots and the gauge show, and the progress bars — see [SETTINGS.md](SETTINGS.md).
+Phone settings (store installs only): the font style, metric or imperial units, what each of the five slots and the gauge show, and the progress bars — see [SETTINGS.md](SETTINGS.md).
 
 Compile-time constants (not settings):
 
@@ -68,7 +68,7 @@ Simulator tools:
 | `tools\sheet.ps1` | Tiles a series of captures into one image |
 | `tools\litpct.ps1` | Measures the lit-pixel percentage in always-on mode |
 | `tools\storeassets.ps1` | Remakes the store screenshots, icons and hero in `store\` from fixed-data simulator frames ([STORE.md](STORE.md)) |
-| `tools\regress.ps1` | Pixel regression against `tests\golden\`; `-Baseline` rewrites it; `-Show <5 field ids> [-Bars] [-Wide]` captures chosen fields for a look |
+| `tools\regress.ps1` | Pixel regression against `tests\golden\`; `-Baseline` rewrites it; `-Show <5 field ids> [-Bars] [-Wide] [-Imperial]` captures chosen fields (or units) for a look |
 
 To load a new build into a running simulator, stop the previous `build.ps1 -Run` / `monkeydo` first; a second `monkeydo` does not replace the running app.
 
@@ -81,6 +81,7 @@ To load a new build into a running simulator, stop the previous `build.ps1 -Run`
 | `source/Slots.mc` | `Slot`: a place that shows one field — style (narrow / wide cell, row, gauge), position, tap rectangle |
 | `source/Fields.mc` | What a slot can show: header (and short form), value / unit / progress / shorter forms, gauge label / 0–100 value / status colour, tap target per field |
 | `source/Settings.mc` | Phone settings: reads the properties with fallbacks to the defaults, which fields each slot takes |
+| `source/Units.mc` | Metric / imperial: temperature, pressure, altitude tape scale, distance and climb strings |
 | `source/Tests.mc` | Unit tests (`.\build.ps1 -Test`; not in watch builds) |
 | `resources/settings/` | Phone settings: `properties.xml` (keys, defaults), `settings.xml` (the form) |
 | `source/PcdDelegate.mc` | Tap targets → `Complications.exitTo` (slots from `Layout.slots`, tapes, station model) |
@@ -103,7 +104,7 @@ To load a new build into a running simulator, stop the previous `build.ps1 -Run`
 - **Gauge** (454 px layout): a `GAUGE` slot, so it draws and taps like the others; the field comes from `Field.gauge`, which gives the label, a 0–100 value and a status colour, so another 0–100 field (sleep score, say) only needs a case there. Segments are pixel-aligned rectangles and the last one fills in proportion, so the bar moves about 2 px per point.
 - **BINGO** (battery ≤ 10%) replaces the bottom row: a square box with a 2 px red border, dimmed 45° hazard stripes clipped to the box, and a white label with a 1 px black halo. The JOKER warning from the first spec and the STRESS warnings (0.1.0) were removed; stress shows in the gauge.
 - **Lunar table** was generated from the ICU Chinese calendar and checked against it for every day from 1900-01-01 to 2100-12-31 (73,414 days, no mismatches). Day 30 is written 三十. ICU can differ from the official calendar when a new moon falls minutes before midnight Beijing time: 2027's Spring Festival is 02-06, not ICU's 02-07, so the 2026 / 2027 entries are corrected by hand (unit test `testLunarDates`). Other such years have not been checked.
-- **Units are fixed:** temperature is always °C whatever the watch setting, pressure always hPa, altitude always metres.
+- **Units** come from the face's own setting, not the watch's: metric (°C, hPa, metres, km) or imperial (°F, inHg, feet, miles, visibility in statute miles). The data stays in SI units (`Data.mc`); `Units.mc` converts only what is drawn. The imperial altitude tape counts hundreds of feet (ticks every 100 / 500 ft) so the box keeps 3 characters. Wind is in knots either way (barbs only, no number).
 - **Sun events** use the weather observation location, then the activity location, then the last known location (saved in app storage).
 - **Always-on** shows only the time (thin strokes), the date and the lunar date. For burn-in, the layer jumps 3–5 px in x and in y every minute (x cycles every 7 minutes, y every 5), more than the widest always-on stroke.
 
