@@ -143,8 +143,9 @@ module Field {
     }
 
     // GAUGE slots: [label, value 0..100 or null, colour]. Only fields with a 0..100 scale have a case; any
-    // other field returns a null value (the gauge shows "--"). Colours: STRESS rises into amber / red at
-    // 51 / 76 (Garmin's medium and high stress); BB and BATTERY fall into amber / red (battery red = BINGO).
+    // other field returns a null value (the gauge shows "--"). Colours (testGaugeColours): STRESS rises into
+    // amber / red at 51 / 76 (Garmin's medium and high stress); BB and BATTERY fall into amber / red (battery
+    // red = BINGO); SPO2 under 90 and SLEEP under 60 are amber; % of a goal stays green (more is better).
     function gauge(id as Number, d as Data) as Array {
         var v = null;
         var col = Col.HUD;
@@ -162,7 +163,9 @@ module Field {
                 col = v <= 10 ? Col.RED : v <= 20 ? Col.AMBER : Col.HUD;
                 return ["BAT", v, col];
             case SPO2:
-                return ["O2", d.spo2, Col.HUD];   // gauge labels: 3 characters at most
+                v = d.spo2;
+                if (v != null && v < 90) { col = Col.AMBER; }   // under 90 % is low
+                return ["O2", v, col];   // gauge labels: 3 characters at most
             case SLEEP:
                 v = d.sleepScore;
                 if (v != null && v < 60) { col = Col.AMBER; }   // Garmin: under 60 = poor

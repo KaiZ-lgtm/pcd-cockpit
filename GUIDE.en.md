@@ -201,7 +201,7 @@ On the fēnix 8 and the other 454 px watches, a gauge above the bottom row shows
 - `STR` on the left, the number on the right, and 10 segments of 10 points in between. The last segment fills in part, so 62 is six full segments and a fifth of the seventh.
 - Colour: cyan 0–25 (rest), green 26–50, amber 51–75, red 76–100.
 - The bottom row only changes for BINGO (low battery; section 6.2).
-- What the gauge shows can be changed in the settings (section 5.1): `STR` stress, `BB` Body Battery, `BAT` watch battery, `O2` blood oxygen, `SLP` sleep score, or `STP` / `FLR` / `ACT` steps, floors or weekly intensity minutes as % of the goal (the bar stops full at 100 %, the number keeps counting). Body Battery and battery turn amber and red as they run low, sleep score amber under 60.
+- What the gauge shows can be changed in the settings (section 5.1): `STR` stress, `BB` Body Battery, `BAT` watch battery, `O2` blood oxygen, `SLP` sleep score, or `STP` / `FLR` / `ACT` steps, floors or weekly intensity minutes as % of the goal (the bar stops full at 100 %, the number keeps counting). Body Battery and battery turn amber and red as they run low; blood oxygen under 90 % and sleep score under 60 are amber; % of a goal stays green.
 
 ### 6.2 Bottom row
 
