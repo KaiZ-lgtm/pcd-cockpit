@@ -232,6 +232,41 @@ function testGaugeFields(logger as Logger) as Boolean {
     return ok;
 }
 
+// Each gauge field colours by its own scale: only stress turns amber / red as it rises; Body Battery and the
+// watch battery as they fall; SpO2 and sleep score amber when low; % of a goal always green.
+(:test)
+function testGaugeColours(logger as Logger) as Boolean {
+    var cases = [
+        // [field, value, expected colour]
+        [Field.STRESS, 10, Col.CYAN], [Field.STRESS, 30, Col.HUD], [Field.STRESS, 51, Col.AMBER], [Field.STRESS, 76, Col.RED],
+        [Field.BB, 100, Col.HUD], [Field.BB, 25, Col.AMBER], [Field.BB, 10, Col.RED],
+        [Field.BATTERY, 100, Col.HUD], [Field.BATTERY, 20, Col.AMBER], [Field.BATTERY, 10, Col.RED],
+        [Field.SPO2, 100, Col.HUD], [Field.SPO2, 90, Col.HUD], [Field.SPO2, 89, Col.AMBER],
+        [Field.SLEEP, 100, Col.HUD], [Field.SLEEP, 60, Col.HUD], [Field.SLEEP, 59, Col.AMBER],
+        [Field.STEPS, 0, Col.HUD], [Field.STEPS, 30000, Col.HUD],
+        [Field.FLOORS, 0, Col.HUD], [Field.FLOORS, 50, Col.HUD],
+        [Field.ACT_MIN, 0, Col.HUD], [Field.ACT_MIN, 600, Col.HUD]
+    ];
+    var ok = true;
+    for (var i = 0; i < cases.size(); i++) {
+        var c = cases[i];
+        var id = c[0] as Number, v = c[1] as Number;
+        var d = new Data();
+        d.stress = v; d.bodyBattery = v; d.battery = v.toFloat(); d.spo2 = v; d.sleepScore = v;
+        d.steps = v; d.stepGoal = 10000; d.floors = v; d.floorsGoal = 10; d.actMin = v; d.actGoal = 150;
+        var g = Field.gauge(id, d);
+        if (g[2] != c[2]) { logger.error("gauge field " + id + " at " + v + ": colour " + g[2].format("%06X")); ok = false; }
+    }
+    // Every gaugeable field is covered above.
+    for (var id = 0; id < Field.COUNT; id++) {
+        if (!Field.gaugeable(id)) { continue; }
+        var seen = false;
+        for (var i = 0; i < cases.size(); i++) { if (cases[i][0] == id) { seen = true; } }
+        if (!seen) { logger.error("no colour case for gauge field " + id); ok = false; }
+    }
+    return ok;
+}
+
 // The per-field tables have one entry per field; every field but SUN (dynamic) has a header.
 (:test)
 function testFieldTables(logger as Logger) as Boolean {
