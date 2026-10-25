@@ -391,12 +391,12 @@ class PcdView extends WatchUi.WatchFace {
     private function drawRow(dc as Dc, L as Layout, hdr as String, val as String?, unit as String, x as Numeric, b as Numeric) as Void {
         var v = val != null ? val : "--";
         var hw = Stroke.width(hdr, L.hdrH), vw = Stroke.width(v, L.valH), gap = 8;
-        var uw = unit.length() > 0 ? Stroke.width(unit, L.unitH) + 4 : 0;
+        var uw = Fit.unitWidth(unit, L);
         var x0 = x - (hw + gap + vw + uw) / 2.0;
         Stroke.header(dc, hdr, x0 + hw / 2.0, b - L.valH + L.hdrH, L.hdrH, _fHdr as StrokeFont);
         Stroke.draw(dc, v, x0 + hw + gap, b, L.valH, val != null ? Col.WHITE : Col.UNIT, Stroke.START, _fVal as StrokeFont);
         if (uw > 0) {
-            Stroke.draw(dc, unit, x0 + hw + gap + vw + 4, b, L.unitH, Col.UNIT, Stroke.START, _fUnit as StrokeFont);
+            Stroke.draw(dc, unit, x0 + hw + gap + vw + Fit.unitGap(unit), b, L.unitH, Col.UNIT, Stroke.START, _fUnit as StrokeFont);
         }
     }
 
@@ -414,7 +414,7 @@ class PcdView extends WatchUi.WatchFace {
         var vx = xc - (vw + uw) / 2.0;
         Stroke.draw(dc, val, vx, vb, L.valH, Col.WHITE, Stroke.START, _fVal as StrokeFont);
         if (unit.length() > 0) {
-            Stroke.draw(dc, unit, vx + vw + 4, vb, L.unitH, Col.UNIT, Stroke.START, _fUnit as StrokeFont);
+            Stroke.draw(dc, unit, vx + vw + Fit.unitGap(unit), vb, L.unitH, Col.UNIT, Stroke.START, _fUnit as StrokeFont);
         }
     }
 

@@ -82,6 +82,13 @@ module Fit {
     }
 
     function unitWidth(unit as String, L as Layout) as Number {
-        return unit.length() > 0 ? Stroke.width(unit, L.unitH) + 4 : 0;
+        return unit.length() > 0 ? unitGap(unit) + Stroke.width(unit, L.unitH) : 0;
+    }
+
+    // Space between a value and its unit: 4 px before % and /goal (they start with a slant), 8 px before a
+    // letter unit (H, KM, M, FT, MI, SM, Z), whose upright first stroke would look stuck to the digits.
+    function unitGap(unit as String) as Number {
+        var c = unit.toCharArray()[0];
+        return c >= 'A' && c <= 'Z' ? 8 : 4;
     }
 }
