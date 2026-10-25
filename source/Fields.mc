@@ -9,7 +9,7 @@ module Field {
     enum {
         BB, SPO2, ACT_MIN, SUN, STRESS, BATTERY,
         STEPS, FLOORS, FLOORS_DN, KCAL, DIST, ACT_DAY, CLIMB, VO2_RUN, VO2_BIKE, RUN_WK, BIKE_WK,
-        RHR, SLEEP, UTC, VIS, POP,
+        RHR, SLEEP, UTC, VIS, POP, RECOVERY,
         COUNT
     }
 
@@ -37,13 +37,13 @@ module Field {
     const HEADERS = [
         "BB>", "SPO2>", "ACT MIN>", null, "STRESS>", "BAT>",
         "STEPS>", "FLOORS>", "FL DN>", "KCAL>", "DIST>", "ACT DAY>", "CLIMB>", "VO2>", "VO2 BIKE>", "RUN WK>",
-        "BIKE WK>", "RHR>", "SLEEP>", "UTC>", "VIS>", "POP>"
+        "BIKE WK>", "RHR>", "SLEEP>", "UTC>", "VIS>", "POP>", "RECOVERY>"
     ] as Array<String?>;
     // Shorter header where the full one does not fit (Fit.cell / Fit.row); null: the full one always fits.
     const SHORTS = [
         null, null, "ACT>", null, "STR>", null,
         "STP>", "FLR>", "FLD>", "CAL>", null, "ACTD>", "CLB>", null, "VO2B>", "RUN>",
-        "BIKE>", null, "SLP>", "Z>", null, null   // Z: Zulu, as in aviation
+        "BIKE>", null, "SLP>", "Z>", null, null, "REC>"   // Z: Zulu, as in aviation
     ] as Array<String?>;
     // Native page opened when the slot is tapped (null: not tappable).
     const TAPS = [
@@ -57,7 +57,7 @@ module Field {
         Complications.COMPLICATION_TYPE_VO2MAX_BIKE, Complications.COMPLICATION_TYPE_WEEKLY_RUN_DISTANCE,
         Complications.COMPLICATION_TYPE_WEEKLY_BIKE_DISTANCE, Complications.COMPLICATION_TYPE_HEART_RATE,
         SLEEP_SCORE, null, Complications.COMPLICATION_TYPE_CURRENT_WEATHER,
-        Complications.COMPLICATION_TYPE_CURRENT_WEATHER
+        Complications.COMPLICATION_TYPE_CURRENT_WEATHER, Complications.COMPLICATION_TYPE_RECOVERY_TIME
     ] as Array<Complications.Type?>;
 
     function header(id as Number, d as Data) as String {
@@ -124,6 +124,8 @@ module Field {
                 return Units.dist(d.visM, Settings.imperial, true);
             case POP:
                 return [str(d.pop), "%", null, null];
+            case RECOVERY:
+                return [str(d.recoveryH), "H", null, null];
         }
         return [d.sunTime, "", null, null];
     }

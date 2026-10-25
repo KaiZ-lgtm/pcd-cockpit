@@ -23,6 +23,7 @@
             <listEntry value="4">@Strings.FieldStress</listEntry>
             <listEntry value="17">@Strings.FieldRhr</listEntry>
             <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="22">@Strings.FieldRecovery</listEntry>
             <listEntry value="10">@Strings.FieldDist</listEntry>
             <listEntry value="7">@Strings.FieldFloors</listEntry>
             <listEntry value="8">@Strings.FieldFloorsDn</listEntry>
@@ -44,6 +45,7 @@
             <listEntry value="4">@Strings.FieldStress</listEntry>
             <listEntry value="17">@Strings.FieldRhr</listEntry>
             <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="22">@Strings.FieldRecovery</listEntry>
             <listEntry value="10">@Strings.FieldDist</listEntry>
             <listEntry value="7">@Strings.FieldFloors</listEntry>
             <listEntry value="8">@Strings.FieldFloorsDn</listEntry>
@@ -66,6 +68,7 @@
             <listEntry value="4">@Strings.FieldStress</listEntry>
             <listEntry value="17">@Strings.FieldRhr</listEntry>
             <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="22">@Strings.FieldRecovery</listEntry>
             <listEntry value="6">@Strings.FieldSteps</listEntry>
             <listEntry value="10">@Strings.FieldDist</listEntry>
             <listEntry value="9">@Strings.FieldKcal</listEntry>
@@ -92,6 +95,7 @@
             <listEntry value="4">@Strings.FieldStress</listEntry>
             <listEntry value="17">@Strings.FieldRhr</listEntry>
             <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="22">@Strings.FieldRecovery</listEntry>
             <listEntry value="6">@Strings.FieldSteps</listEntry>
             <listEntry value="10">@Strings.FieldDist</listEntry>
             <listEntry value="9">@Strings.FieldKcal</listEntry>
@@ -119,6 +123,7 @@
             <listEntry value="4">@Strings.FieldStress</listEntry>
             <listEntry value="17">@Strings.FieldRhr</listEntry>
             <listEntry value="18">@Strings.FieldSleep</listEntry>
+            <listEntry value="22">@Strings.FieldRecovery</listEntry>
             <listEntry value="6">@Strings.FieldSteps</listEntry>
             <listEntry value="10">@Strings.FieldDist</listEntry>
             <listEntry value="9">@Strings.FieldKcal</listEntry>

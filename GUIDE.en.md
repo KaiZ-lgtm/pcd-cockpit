@@ -161,6 +161,7 @@ In the Connect IQ / Garmin Connect app (face installed from the store): face →
 | `BB>` `SPO2>` `STRESS>` | Body Battery, blood oxygen %, stress |
 | `RHR>` | Resting heart rate |
 | `SLEEP>` | Sleep score (0–100) |
+| `RECOVERY>` | Recovery time: hours until you have recovered from the last activity, `0` = recovered |
 | `STEPS>` | Steps today (bar: step goal; wide places only) |
 | `DIST>` | Distance today, km (imperial: miles) |
 | `KCAL>` | Calories today, including resting (wide places only) |
@@ -175,7 +176,7 @@ In the Connect IQ / Garmin Connect app (face installed from the store): face →
 | `UTC>` | UTC time with `Z` ("Zulu"), as used in aviation (wide places only) |
 | `BAT>` | Watch battery % |
 
-Where space is short (the two narrow windows, the bottom row) long values are shortened: `23456` steps show as `23.5K` or `23K`, `12.4` km as `12`; long headers too (`STRESS>` → `STR>`, `STEPS>` → `STP>`, `SLEEP>` → `SLP>`, `KCAL>` → `CAL>`, `FLOORS>` → `FLR>`, `FL DN>` → `FLD>`, `CLIMB>` → `CLB>`, `ACT MIN>` → `ACT>`, `ACT DAY>` → `ACTD>`, `VO2 BIKE>` → `VO2B>`, `RUN WK>` → `RUN>`, `BIKE WK>` → `BIKE>`, `UTC>` → `Z>`). `--` means the watch has no value (for example cycling VO2 max without a power meter).
+Where space is short (the two narrow windows, the bottom row) long values are shortened: `23456` steps show as `23.5K` or `23K`, `12.4` km as `12`; long headers too (`STRESS>` → `STR>`, `STEPS>` → `STP>`, `SLEEP>` → `SLP>`, `KCAL>` → `CAL>`, `FLOORS>` → `FLR>`, `FL DN>` → `FLD>`, `CLIMB>` → `CLB>`, `ACT MIN>` → `ACT>`, `ACT DAY>` → `ACTD>`, `VO2 BIKE>` → `VO2B>`, `RUN WK>` → `RUN>`, `BIKE WK>` → `BIKE>`, `UTC>` → `Z>`, `RECOVERY>` → `REC>`). `--` means the watch has no value (for example cycling VO2 max without a power meter).
 
 ### 5.2 Units
 

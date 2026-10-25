@@ -2,7 +2,7 @@
 
 Text for the store page, plus the submission steps.
 
-**Submitted 2026-10-05** as version 0.1.0 (developer name `PCDCockpit`, category Digital, free, English + 简体中文, source link to GitHub): https://apps.garmin.com/apps/dfd968c1-9d33-4d44-a191-c6de0fa0d4e6 — pending review. Updates go through "Upload New Version" on that page, signed with the same `developer_key`.
+**Submitted 2026-10-05** as version 0.1.0 (developer name `PCDCockpit`, category Digital, free, English + 简体中文, source link to GitHub): https://apps.garmin.com/apps/dfd968c1-9d33-4d44-a191-c6de0fa0d4e6 — approved and live by 2026-10-25. Updates go through "Upload New Version" on that page, signed with the same `developer_key`.
 
 The description below is the one for the next upload (0.2.0: phone settings, new fields, font styles, imperial units; no STRESS warning). The 0.1.0 listing was the same without the customisation line.
 
@@ -63,7 +63,7 @@ BINGO
 
 ALSO ON THE FACE
 - Large 24-hour time, weekday, date and the Chinese lunar date.
-- Customisable in the Connect IQ app: the three data windows, the date block, the bottom row and the gauge (over 20 fields, from steps and sleep score to UTC "Zulu" time, visibility and chance of rain), three font styles and progress bars.
+- Customisable in the Connect IQ app: the three data windows, the date block, the bottom row and the gauge (over 20 fields, from steps, sleep score and recovery time to UTC "Zulu" time, visibility and chance of rain), three font styles and progress bars.
 - Segmented gauge in cockpit style on fēnix-size watches: stress by default, turning amber and red as it rises.
 - Tap any element to open the matching page on the watch.
 - Always-on mode shows only the time, date and lunar date in thin strokes, shifted every minute to protect the AMOLED screen.
@@ -99,7 +99,7 @@ BINGO
 
 表盘上还有
 - 大号 24 小时制时间、星期、日期和农历。
-- 可在 Connect IQ App 里自定义：三个数据窗、日期右列、底部一行和压力条（20 多项数据，从步数、睡眠分数到 UTC "Zulu" 时间、能见度和降水概率），三种字体风格，以及进度条。
+- 可在 Connect IQ App 里自定义：三个数据窗、日期右列、底部一行和压力条（20 多项数据，从步数、睡眠分数、恢复时间到 UTC "Zulu" 时间、能见度和降水概率），三种字体风格，以及进度条。
 - fēnix 尺寸的表上有座舱风格的分段条：默认显示压力，升高时变成琥珀色和红色。
 - 点击表盘上的任何元素，都能打开手表上对应的页面。
 - 息屏时只显示细线条的时间、日期和农历，并且每分钟平移一次，防止 AMOLED 烧屏。

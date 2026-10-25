@@ -157,7 +157,7 @@ public class FontGen {
         s.add(new Spec("FTapeUnit", big ? 11 : 10, 1.2, "10MFT"));       // 10M; imperial 100 over FT
         s.add(new Spec("FHdr", hdr, 1.5, AZ + DIG + ">"));
         s.add(new Spec("FVal", val, def(val), DIG + "-.K"));               // 8.4 (km), 12.3K (steps)
-        s.add(new Spec("FUnit", unit, 1.5, DIG + "%/KMZFTIS"));            // KM, M, Z (UTC); imperial FT, MI, SM
+        s.add(new Spec("FUnit", unit, 1.5, DIG + "%/KMZFTISH"));           // KM, M, Z (UTC), H (recovery); imperial FT, MI, SM
         s.add(new Spec("FTabWarn", tab, def(tab), "BINGO"));
         s.add(new Spec("FLunar", lun, big ? 4 : 3, CJK_CHARS));                      // active and always-on
         return s;

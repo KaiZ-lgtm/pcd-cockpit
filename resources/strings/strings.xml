@@ -33,6 +33,7 @@
     <string id="FieldBikeWk">BIKE WK - Cycling distance this week (km or mi)</string>
     <string id="FieldRhr">RHR - Resting heart rate</string>
     <string id="FieldSleep">SLEEP - Sleep score</string>
+    <string id="FieldRecovery">RECOVERY - Recovery time (hours)</string>
     <string id="FieldUtc">UTC - Zulu time (wide slots only)</string>
     <string id="FieldVis">VIS - Visibility (km or statute miles)</string>
     <string id="FieldPop">POP - Chance of precipitation</string>

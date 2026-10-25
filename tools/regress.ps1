@@ -105,11 +105,11 @@ try {
            "        wxTemp = 43.0; wxDew = -35.0; wxPressure = 105000.0; altitude = 8848.0;`n" +
            "        steps = 23456; stepGoal = 10000; floors = 128; floorsGoal = 10; floorsDn = 99; kcal = 3456;`n" +
            "        distM = 123400.0; actDay = 240; climbM = 2345.0; vo2Run = 65; vo2Bike = 52; runWkM = 112300.0;`n" +
-           "        bikeWkM = 312000.0; rhr = 104; sleepScore = 100; visM = 50000.0; pop = 100; utcTime = `"2359`";`n"
+           "        bikeWkM = 312000.0; rhr = 104; sleepScore = 100; visM = 50000.0; pop = 100; utcTime = `"2359`"; recoveryH = 96;`n"
            } else {
            "        steps = 8642; stepGoal = 10000; floors = 7; floorsGoal = 10; floorsDn = 5; kcal = 1840;`n" +
            "        distM = 8420.0; actDay = 35; climbM = 312.0; vo2Run = 48; vo2Bike = null; runWkM = 23400.0;`n" +
-           "        bikeWkM = 0.0; rhr = 48; sleepScore = 82; visM = 4800.0; pop = 40; utcTime = `"0242`";`n"
+           "        bikeWkM = 0.0; rhr = 48; sleepScore = 82; visM = 4800.0; pop = 40; utcTime = `"0242`"; recoveryH = 36;`n"
            })
     [IO.File]::WriteAllText("$work\source\Data.mc", $data0.Replace($anchor, $fix + $anchor), $enc)
     foreach ($dev in $Device) {

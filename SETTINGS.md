@@ -1,6 +1,6 @@
 # Watch-face settings
 
-Status: built (2026-10-08) for the next store version (0.2.0); not yet released. Phone settings only.
+Status: built for store version 0.2.0 (2026-10-25). Phone settings only.
 Related: [requirements.md](requirements.md) (what the face shows), [README.md](README.md) (build, tests and source layout).
 
 ## 1. Scope
@@ -52,6 +52,7 @@ In the phone lists in this order (`resources/settings/settings.xml`; each list s
 | 4 | `STRESS>` (`STR>`) | Stress | ActivityMonitor / SensorHistory | | Stress |
 | 17 | `RHR>` | Resting heart rate | UserProfile | | Heart rate |
 | 18 | `SLEEP>` (`SLP>`) | Sleep score 0–100 | Complication (API 6.0.2) | | Sleep score |
+| 22 | `RECOVERY>` (`REC>`) | Recovery time from the last activity, `36 H` (Garmin caps it at 96) | ActivityMonitor `timeToRecovery` | | Recovery time |
 | 6 | `STEPS>` (`STP>`) | Steps today — **wide only** (in a narrow cell it would be `9K` on the Venu 3S) | ActivityMonitor | step goal | Steps |
 | 10 | `DIST>` | Distance today, `8.4 KM` (imperial `5.2 MI`) | ActivityMonitor | | Steps |
 | 9 | `KCAL>` (`CAL>`) | Calories today (incl. resting) — **wide only** | ActivityMonitor | | Calories |
@@ -73,7 +74,7 @@ In the phone lists in this order (`resources/settings/settings.xml`; each list s
 
 Fitting (`Fit` in `Slots.mc`). In a cell: a header within 10 px of the cell width uses the short form in brackets; a value + unit wider than the cell drops the unit, then tries the field's shorter forms in order. Counts from 1,000 up: `23456` → `23.5K` → `23K`; km or mi under 100: `12.4` → `12`. In the bottom row (at most `Layout.rowW`: 150 px fēnix, 140 px Venu 3S, as wide as the original `SS>1856`): value with unit, without, then the shorter forms, each with the full and then the short header. Unit test `testEveryFieldFits` checks every field in every slot it is allowed in, on both layouts and in both unit systems, with its widest value. Narrow cells hold 3 digits, or `8.6K` on the fēnix (100 px; Venu 3S 80 px); the wide-only fields have 4 digits that cannot be shortened.
 
-Fonts: the value font has `.` and `K`, the unit font `K`, `M`, `Z`, `F`, `T`, `I` and `S` (`KM`, `M`, `Z`, `FT`, `MI`, `SM`), the station model font `.` (`29.92`), the tape unit font `F` and `T` (`100` over `FT`) (FontGen). `.` has its own narrow advance (2K + 2 grid units, `_adv[4]`).
+Fonts: the value font has `.` and `K`, the unit font `K`, `M`, `Z`, `F`, `T`, `I`, `S` and `H` (`KM`, `M`, `Z`, `FT`, `MI`, `SM`, `H`), the station model font `.` (`29.92`), the tape unit font `F` and `T` (`100` over `FT`) (FontGen). `.` has its own narrow advance (2K + 2 grid units, `_adv[4]`).
 
 Availability differs per watch and is only known at run time (e.g. cycling VO2 max, sleep score on older firmware): no value shows `--`.
 

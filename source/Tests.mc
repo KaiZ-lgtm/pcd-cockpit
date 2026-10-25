@@ -57,7 +57,8 @@ function testFieldIdsStable(logger as Logger) as Boolean {
         && Field.BATTERY == 5 && Field.STEPS == 6 && Field.FLOORS == 7 && Field.FLOORS_DN == 8 && Field.KCAL == 9
         && Field.DIST == 10 && Field.ACT_DAY == 11 && Field.CLIMB == 12 && Field.VO2_RUN == 13
         && Field.VO2_BIKE == 14 && Field.RUN_WK == 15 && Field.BIKE_WK == 16 && Field.RHR == 17
-        && Field.SLEEP == 18 && Field.UTC == 19 && Field.VIS == 20 && Field.POP == 21 && Field.COUNT == 22
+        && Field.SLEEP == 18 && Field.UTC == 19 && Field.VIS == 20 && Field.POP == 21 && Field.RECOVERY == 22
+        && Field.COUNT == 23
         && Field.LUNAR == -1;
 }
 
@@ -108,7 +109,7 @@ function widestData(imp as Boolean) as Data {
     var u = imp ? Units.M_PER_MI : 1000.0;
     d.distM = 99.94 * u; d.actDay = 999; d.climbM = 9999.0; d.vo2Run = 99; d.vo2Bike = 99;
     d.runWkM = 99.94 * u; d.bikeWkM = 999.4 * u; d.rhr = 199; d.sleepScore = 100; d.visM = 99.94 * u; d.pop = 100;
-    d.utcTime = "2359";
+    d.utcTime = "2359"; d.recoveryH = 96;   // Garmin caps recovery time at 4 days
     return d;
 }
 
