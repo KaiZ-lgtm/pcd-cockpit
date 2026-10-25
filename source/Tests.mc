@@ -95,6 +95,8 @@ function testFieldFormats(logger as Logger) as Boolean {
     d.utcTime = "1442";
     r = Field.read(Field.UTC, d);
     ok = ok && "1442".equals(r[0]) && "Z".equals(r[1]);
+    // Value-unit gap: wider before a letter unit (96 H, 8.4 KM) than before % and /goal (97%, 95/150).
+    ok = ok && Fit.unitGap("H") == 8 && Fit.unitGap("KM") == 8 && Fit.unitGap("%") == 4 && Fit.unitGap("/150") == 4;
     return ok;
 }
 
