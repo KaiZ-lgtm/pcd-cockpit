@@ -48,6 +48,7 @@ class Data {
     var visM as Float? = null;            // weather visibility, metres
     var pop as Number? = null;            // chance of precipitation, %
     var utcTime as String? = null;        // "HHMM"
+    var recoveryH as Number? = null;      // time to recovery from the last activity, hours (0 = recovered)
 
     private var _slowMinute as Number = -1;
 
@@ -112,6 +113,7 @@ class Data {
         visM = wide ? 50000.0 : 4800.0;
         pop = wide ? 100 : 40;
         utcTime = wide ? "2359" : "0242";
+        recoveryH = wide ? 96 : 36;
         System.println("demo " + i + " cond " + wxCond + " cover " + wxCover + " wind " + wxWindDir + "/" + wxWindKt);
     }
 
@@ -169,6 +171,7 @@ class Data {
         distM = am.distance != null ? am.distance / 100.0 : null;   // cm
         actDay = am.activeMinutesDay != null ? am.activeMinutesDay.total : null;
         climbM = (am has :metersClimbed && am.metersClimbed != null) ? am.metersClimbed.toFloat() : null;
+        recoveryH = (am has :timeToRecovery) ? am.timeToRecovery : null;
         runWkM = complicationFloat(Complications.COMPLICATION_TYPE_WEEKLY_RUN_DISTANCE);
         bikeWkM = complicationFloat(Complications.COMPLICATION_TYPE_WEEKLY_BIKE_DISTANCE);
         var sl = complicationFloat(42 as Complications.Type);   // COMPLICATION_TYPE_SLEEP_SCORE (API 6.0.2)
