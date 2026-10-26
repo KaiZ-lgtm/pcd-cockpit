@@ -4,7 +4,7 @@ Text for the store page, plus the submission steps.
 
 **Submitted 2026-10-05** as version 0.1.0 (developer name `PCDCockpit`, category Digital, free, English + 简体中文, source link to GitHub): https://apps.garmin.com/apps/dfd968c1-9d33-4d44-a191-c6de0fa0d4e6 — approved and live by 2026-10-25. Updates go through "Upload New Version" on that page, signed with the same `developer_key`.
 
-The description below is the one for the next upload (0.2.0: phone settings, new fields, font styles, imperial units; no STRESS warning). The 0.1.0 listing was the same without the customisation line.
+**1.1.0 submitted 2026-10-25** through "Upload New Version" (phone settings, 17 new fields including recovery time, font styles, metric / imperial units; no STRESS warning). The description below is the 1.1.0 text, entered in both languages with a "What's New" note; the description ends with the source link, and the Source Code URL now points to `KaiZ-lgtm`. Released without a beta: the settings were checked in the simulator and a sideloaded build on the fēnix 8. The 0.1.0 listing was the same without the customisation line.
 
 The listing avoids "F-35" and other aircraft or maker names: the App Review Guidelines ask developers to be careful with other companies' brand names, and "F-35" is a Lockheed Martin trademark. "Fighter-jet HUD / cockpit display style" says the same thing. The code comments and internal docs are not affected.
 

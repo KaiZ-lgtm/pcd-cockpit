@@ -85,7 +85,7 @@ Coordinates are pixels relative to the screen centre, x right and y down; where 
    - Bar: 10 segments of 19 px with 1 px gaps (199 px, centred), 6 px tall, bottom at y +170. Each segment is 10 points; the last one fills in proportion (62 = 6 full segments and 20 % of the 7th). Filled parts are in the status colour; empty segments are dim #3A3A3A outlines. A 1 px gray end mark at each end, 3 px taller than the bar. No quarter ticks.
    - Label left of the bar (cyan; `STR`, `BB`, `BAT`, `O2`), value right of it (status colour), both in the same 14 px font (the tape value glyphs), 6 px from the bar and top-aligned with it. Labels are 3 characters at most: a longer one would reach the bezel.
    - Status colours: STRESS ≤ 25 cyan, 26–50 green, 51–75 amber, ≥ 76 red (Garmin's rest / low / medium / high); BB red ≤ 10, amber ≤ 25; BAT red ≤ 10 (BINGO), amber ≤ 20; otherwise green.
-   - The gauge is the only stress warning: the STRESS warning boxes were removed (0.2.0). BINGO still replaces the bottom row.
+   - The gauge is the only stress warning: the STRESS warning boxes were removed (1.1.0). BINGO still replaces the bottom row.
 
 6. **Bottom row** — a row-style slot, the sun event by default: `SS> 1856` / `SR> 0703`, centred, value baseline y +212 on the 454 px layout with the gauge (as far down as it goes: the value's lower right corner is ~3 px inside the bezel; +203 without the gauge) / +177 on the Venu.
    - BINGO (battery ≤ 10%, red stripes) replaces it; otherwise it shows the slot's field in row style, no frame.

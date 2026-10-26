@@ -1,6 +1,6 @@
 # Watch-face settings
 
-Status: built for store version 0.2.0 (2026-10-25). Phone settings only.
+Status: released in store version 1.1.0 (submitted 2026-10-25). Phone settings only.
 Related: [requirements.md](requirements.md) (what the face shows), [README.md](README.md) (build, tests and source layout).
 
 ## 1. Scope
@@ -102,9 +102,9 @@ Later, as small icons in free space rather than fields: unread notifications, al
 - **Simulator settings editor**: File > Edit Persistent Storage > Edit Application.Properties data.
 - **Real watches**: phone settings only work for store installs. Before release, upload a **beta** (Connect IQ "Beta App" checkbox) built with a separate app id in `manifest.xml`, install it from the store, change each setting from the phone, check the face updates and survives a reboot; then switch the app id back for the release upload.
 
-## 7. Release checklist (0.2.0)
+## 7. Release checklist (done for 1.1.0)
 
 1. Unit tests and regression pass.
-2. Beta test on the fēnix 8 and the Venu 3S (§6).
+2. Beta test on the fēnix 8 and the Venu 3S (§6). For 1.1.0 this was replaced by a sideloaded build (recovery time in data window 1) on the fēnix 8; the phone settings themselves are first tried on the store install.
 3. App id back to the production id; `.\build.ps1 -Export`; upload as a new version of the existing store app (same `developer_key`).
 4. Update the store text (settings, new fields, units) and the GitHub link (`KaiZ-lgtm`).
